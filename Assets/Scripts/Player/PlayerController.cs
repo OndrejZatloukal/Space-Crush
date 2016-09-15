@@ -9,7 +9,8 @@ public class Boundary
     public float xMin, xMax, yMin, yMax;
 }
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
 
     private Rigidbody2D rb;
     private new PolygonCollider2D collider;
@@ -18,16 +19,26 @@ public class PlayerController : MonoBehaviour {
     public float tilt;
     public Boundary boundary;
 
+    public GameObject shot;
+    public Transform shotSpawn;
+    public float fireRate;
+
+    private float nextFire;
+
     void Start ()
     {
         rb = GetComponent<Rigidbody2D>();
         collider = GetComponent<PolygonCollider2D>();
     }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	void Update()
+    {
+        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+            Instantiate(shot, shotSpawn.position, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+        }
+    }
 
     // Player Movement 
     void FixedUpdate()
