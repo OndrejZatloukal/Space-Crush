@@ -3,6 +3,8 @@ using System.Collections;
 
 public class DestroyByContact : MonoBehaviour
 {
+    public GameObject explosion;
+    public GameObject playerExplosion;
     public int scoreValue;
 
     private GameController gameController;
@@ -27,10 +29,12 @@ public class DestroyByContact : MonoBehaviour
             return;
         }
         // Explosion
+        Instantiate(explosion, transform.position, transform.rotation);
 
         //Player Explosion
         if (other.tag == "Player")
         {
+            Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
             gameController.GameOver();
         }
         else

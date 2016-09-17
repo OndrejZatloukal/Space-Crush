@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     public float tilt;
     public Boundary boundary;
 
-    public GameObject shotFlashBow;
+    public GameObject shotFlash;
     public GameObject portThruster;
     public GameObject starboardThruster;
     public GameObject shield;
@@ -63,7 +63,6 @@ public class PlayerController : MonoBehaviour
         // get components
         rb = GetComponent<Rigidbody2D>();
         collider = GetComponent<PolygonCollider2D>();
-        shotFlashBowanimator = shotFlashBow.GetComponent<Animator>();
         portThrusterAnimator = portThruster.GetComponent<Animator>();
         starboardThrusterAnimator = starboardThruster.GetComponent<Animator>();
 
@@ -89,10 +88,9 @@ public class PlayerController : MonoBehaviour
             // shoot from all active guns
             foreach (int i in shotSpawnsActive)
             {
+                (Instantiate(shotFlash, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.z * Mathf.Rad2Deg)) as GameObject).transform.parent = transform;
                 Instantiate(shot, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.z * Mathf.Rad2Deg));
-            }
-
-            shotFlashBowanimator.SetTrigger("shotTriggerPlayer");
+            };
         }
 
         // Debug commands

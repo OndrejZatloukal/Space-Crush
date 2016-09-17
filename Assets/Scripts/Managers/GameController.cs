@@ -6,6 +6,7 @@ public class GameController : MonoBehaviour
 {
 
     public GameObject levelManager; // mainly here for testing main scene
+    public GameObject vfx; // for debugging
 
     public GameObject[] hazards;
     public int hazardCount;
@@ -68,6 +69,12 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton6))
         {
             LevelManager.instance.LoadLevel("01a Main Menu");
+        }
+
+        // Debug VFX
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            Instantiate(vfx, new Vector3(0, 2, 0), Quaternion.Euler(0,0,0));
         }
     }
 
