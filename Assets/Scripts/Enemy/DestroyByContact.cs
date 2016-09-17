@@ -39,14 +39,15 @@ public class DestroyByContact : MonoBehaviour
         }
 
         //if (other.tag != "Explosion" && other.tag != "Shield")
-        //{
-        Destroy(other.gameObject);
-        //}
+        if (other.tag != "Shield")
+        {
+            Destroy(other.gameObject);
+        }
 
-        //if (other.CompareTag("Shield"))
-        //{
-        //    other.GetComponentInParent<PlayerController>().ShieldDown();
-        //}
+        if (other.tag == "Shield")
+        {
+            other.GetComponentInParent<PlayerController>().ShieldDown();
+        }
 
         Destroy(gameObject);
     }
