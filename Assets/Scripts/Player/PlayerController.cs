@@ -21,22 +21,31 @@ public class PlayerController : MonoBehaviour
     private Animator portThrusterAnimator;
     private Animator starboardThrusterAnimator;
 
+    public new Camera camera;
+    public SpriteRenderer sprite;
+    public Sprite defaultSprite;
+    public Sprite turretActiveSprite;
+
     public float speed;
     public float tilt;
     public Boundary boundary;
 
+    public GameObject shot;
+    public GameObject turretShot;
     public GameObject shotFlash;
+    public GameObject shotFlashTurret;
     public GameObject portThruster;
     public GameObject starboardThruster;
     public GameObject shield;
+    public GameObject turret;
 
-    public GameObject shot;
     public Transform[] shotSpawns;
+    public Transform[] turretShotSpawns;
     public float fireRate;
     public float powerupTime;
 
-    public bool startShield = false;
-    public bool debugPlayer = true;
+    public bool startShield;
+    public bool debugPlayer;
 
     private float nextFire;
     private float fireRateDown;
@@ -46,6 +55,14 @@ public class PlayerController : MonoBehaviour
     private bool fireRatePower;
     private List<int> shotSpawnsActive = new List<int>();
     private bool speedUpPower;
+
+    // variables for turret
+    private float turretDown;
+    private float turretFireRate;
+    private float nextTurretFire;
+    private int turretShotSpawnActive;
+
+    private Vector3 mouseVector;
 
     void Start()
     {
@@ -70,6 +87,10 @@ public class PlayerController : MonoBehaviour
         shield.SetActive(false);
         fireRatePower = false;
         shotSpawnsActive.Add((int)Side.Bow);
+        speedUpPower = false;
+        turret.SetActive(false);
+        turretFireRate = fireRate;
+        turretShotSpawnActive = 0;
 
         // set shield state
         if (startShield)
@@ -88,8 +109,8 @@ public class PlayerController : MonoBehaviour
             // shoot from all active guns
             foreach (int i in shotSpawnsActive)
             {
-                (Instantiate(shotFlash, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.z * Mathf.Rad2Deg)) as GameObject).transform.parent = transform;
-                Instantiate(shot, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.z * Mathf.Rad2Deg));
+                (Instantiate(shotFlash, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.eulerAngles.z)) as GameObject).transform.parent = transform;
+                Instantiate(shot, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.eulerAngles.z));
             };
         }
 
@@ -119,10 +140,15 @@ public class PlayerController : MonoBehaviour
             {
                 StartPowerup(4);
             }
+
+            // Activate Turret
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                StartPowerup(5);
+            }
         } // end debug commands
     } // end Update
 
-    // Player Movement 
     void FixedUpdate()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
@@ -142,6 +168,46 @@ public class PlayerController : MonoBehaviour
         rb.transform.rotation = Quaternion.Euler(0.0f, rb.velocity.x * -tilt, 0.0f);
         // counter rotate shield
         shield.transform.rotation = Quaternion.Euler(0.0f, rb.velocity.x * +tilt, 0.0f);
+
+        // if turret powerup active
+        //if (turretActive)
+        if (turret.activeSelf)
+        {
+            mouseVector = camera.ScreenToWorldPoint(Input.mousePosition);
+
+            // if the mouse is on the Space game screen
+            if (mouseVector.x <= 7)
+            {
+                //turret rotation
+                Vector3 relative = mouseVector - turret.transform.position;
+
+                turret.transform.rotation = Quaternion.Euler(
+                    0.0f,
+                    turret.transform.rotation.eulerAngles.y,
+                    Mathf.Atan2(relative.x, relative.y) * -Mathf.Rad2Deg
+                    );
+
+                //shoot turret
+                if (Input.GetMouseButton(0) && Time.time > nextTurretFire)
+                {
+                    nextTurretFire = Time.time + turretFireRate;
+
+                    (Instantiate(shotFlashTurret, turretShotSpawns[turretShotSpawnActive].position, Quaternion.Euler(0.0f, 0.0f, turretShotSpawns[turretShotSpawnActive].rotation.eulerAngles.z)) as GameObject).transform.parent = transform;
+                    Instantiate(turretShot, turretShotSpawns[turretShotSpawnActive].position, Quaternion.Euler(0.0f, 0.0f, turretShotSpawns[turretShotSpawnActive].rotation.eulerAngles.z));
+
+                    // toggle between shot spawns
+                    turretShotSpawnActive = 1 - turretShotSpawnActive;
+                }
+            }
+            else
+            {
+                turret.transform.rotation = Quaternion.Euler(
+                    0.0f,
+                    turret.transform.rotation.eulerAngles.y,
+                    0.0f
+                    );
+            }
+        }
     } // end FixedUpdate
 
     // ---------------------------------
@@ -168,7 +234,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (index == 5)
         {
-            //StartCoroutine(Turret());
+            StartCoroutine(Turret());
         }
     } // end StartPowerup
 
@@ -258,4 +324,25 @@ public class PlayerController : MonoBehaviour
             starboardThrusterAnimator.SetTrigger("disengageBoost");
         }
     } // end IEnumerator SpeedPower
+
+    public IEnumerator Turret()
+    {
+        turretDown = Time.time + powerupTime * 2;
+        if (!turret.activeSelf)
+        {
+            // power up
+            sprite.sprite = turretActiveSprite;
+            turret.SetActive(true);
+            powerupUI.TurretActive();
+
+            // wait for timer to run out
+            yield return new WaitWhile(() => turretDown > Time.time);
+
+            // power down
+            turret.transform.rotation = Quaternion.Euler(0.0f, turret.transform.rotation.eulerAngles.y, 0.0f);
+            turret.SetActive(false);
+            sprite.sprite = defaultSprite;
+            powerupUI.TurretOverlayDeactive();
+        }
+    } // end IEnumerator Turret
 } // end class PlayerController

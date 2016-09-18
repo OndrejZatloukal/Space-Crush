@@ -27,6 +27,8 @@ public class GameController : MonoBehaviour
     public int targetSpecial;
     public float targetSpecialIncrement;
 
+    private SecondaryController secondaryController;
+    private PowerupUI powerupUI;
     private PlayerController playerController;
 
     private bool gameOver;
@@ -46,7 +48,11 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        // Try to find the player
+        // get secondary controller
+        secondaryController = gameObject.GetComponent<SecondaryController>();
+        powerupUI = gameObject.GetComponent<PowerupUI>();
+
+        // try to find the player
         try
         {
             playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
@@ -160,6 +166,10 @@ public class GameController : MonoBehaviour
     {
         gameOverText.text = "Game Over";
         gameOver = true;
+
+        // deactivate Crush game
+        powerupUI.TurretOverlayDeactive();
+        secondaryController.DeactivateMouse();
 
         Invoke("Restart", restartWait);
     }

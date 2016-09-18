@@ -57,7 +57,7 @@ public class SecondaryController : MonoBehaviour
     void Start()
     {
         // Get GameController
-        gameController = GetComponentInParent<GameController>();
+        gameController = gameObject.GetComponent<GameController>();
 
         // Try to find the player
         try

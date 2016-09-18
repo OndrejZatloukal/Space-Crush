@@ -1,31 +1,60 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class PowerupUI : MonoBehaviour {
 
     public Sprite[] sprites;
     public Image[] icons;
+    public GameObject turretOverlay;
+    public GameObject continueButton;
+
+    private SecondaryController secondaryController;
 
     void Start()
     {
-        //foreach (GUIText text in activeTexts)
-        //{
-        //    text.text = "";
-        //}
+        secondaryController = gameObject.GetComponent<SecondaryController>();
 
-        //img.sprite = 
+        turretOverlay.SetActive(false);
+        continueButton.SetActive(false);
     }
 
     public void Active(int index)
     {
         --index;
-        icons[index].sprite = sprites[index * 2 + 1];
+        if (index >= 0 && index < icons.Length)
+        {
+            icons[index].sprite = sprites[index * 2 + 1];
+        }
     }
 
     public void Deactive(int index)
     {
         --index;
-        icons[index].sprite = sprites[index * 2];
+        if (index >= 0 && index < icons.Length)
+        {
+            icons[index].sprite = sprites[index * 2];
+        }
+    }
+
+    public void TurretActive()
+    {
+        if (!turretOverlay.activeSelf)
+        {
+            secondaryController.DeactivateMouse();
+            turretOverlay.SetActive(true);
+            continueButton.SetActive(true);
+        }
+    }
+
+    public void TurretOverlayDeactive()
+    {
+        if (turretOverlay.activeSelf)
+        {
+            turretOverlay.SetActive(false);
+            continueButton.SetActive(false);
+            secondaryController.ReactivateMouse();
+        }
     }
 }
