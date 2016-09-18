@@ -22,8 +22,9 @@ public class GameController : MonoBehaviour
     public Text scoreText;
     public Text waveText;
     public Image specialBar;
-    public Text gameOverText;
-    public Text restartText;
+    public GameObject gameOverOverlay;
+    public Text finalScoreText;
+    public Text finalWaveText;
     public int targetSpecial;
     public float targetSpecialIncrement;
 
@@ -65,8 +66,9 @@ public class GameController : MonoBehaviour
         // initialize variables and UI
         gameOver = false;
         restart = false;
-        restartText.text = "";
-        gameOverText.text = "";
+        gameOverOverlay.SetActive(false);
+        finalScoreText.text = "";
+        finalWaveText.text = "";
         score = 0;
         wave = 0;
         scoreSpecial = 0;
@@ -164,7 +166,6 @@ public class GameController : MonoBehaviour
 
     public void GameOver()
     {
-        gameOverText.text = "Game Over";
         gameOver = true;
 
         // deactivate Crush game
@@ -176,7 +177,9 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
-        restartText.text = "Press 'R' for Restart or 'Esc' for Main Menu";
+        gameOverOverlay.SetActive(true);
+        finalScoreText.text = "" + score;
+        finalWaveText.text = "" + wave;
         restart = true;
     }
 }
