@@ -422,53 +422,53 @@ public class SecondaryController : MonoBehaviour
             {
                 scoreBlue += matchScore * (count - 2);
 
+                // display score in progress bar
+                shieldBar.rectTransform.anchorMax = new Vector2((float)scoreBlue / (float)targetBlue, 1);
+
                 if (scoreBlue >= targetBlue && player != null)
                 {
                     player.StartPowerup(1);
                     scoreBlue -= targetBlue;
                 }
-
-                // display score in progress bar
-                shieldBar.rectTransform.anchorMax = new Vector2((float)scoreBlue / (float)targetBlue, 1);
             }
             else if (tag == "PowerupFireRate")
             {
                 scoreRed += matchScore * (count - 2);
+
+                // display score in progress bar
+                fireRateBar.rectTransform.anchorMax = new Vector2((float)scoreRed / (float)targetRed, 1);
 
                 if (scoreRed >= targetRed && player != null)
                 {
                     player.StartPowerup(2);
                     scoreRed -= targetRed;
                 }
-
-                // display score in progress bar
-                fireRateBar.rectTransform.anchorMax = new Vector2((float)scoreRed / (float)targetRed, 1);
             }
             else if (tag == "PowerupDoubleFire")
             {
                 scoreYellow += matchScore * (count - 2);
+
+                // display score in progress bar
+                doubleFireBar.rectTransform.anchorMax = new Vector2((float)scoreYellow / (float)targetYellow, 1);
 
                 if (scoreYellow >= targetYellow && player != null)
                 {
                     player.StartPowerup(3);
                     scoreYellow -= targetYellow;
                 }
-
-                // display score in progress bar
-                doubleFireBar.rectTransform.anchorMax = new Vector2((float)scoreYellow / (float)targetYellow, 1);
             }
             else if (tag == "PowerupSpeed")
             {
                 scoreGreen += matchScore * (count - 2);
+
+                // display score in progress bar
+                speedBar.rectTransform.anchorMax = new Vector2((float)scoreGreen / (float)targetGreen, 1);
 
                 if (scoreGreen >= targetGreen && player != null)
                 {
                     player.StartPowerup(4);
                     scoreGreen -= targetGreen;
                 }
-
-                // display score in progress bar
-                speedBar.rectTransform.anchorMax = new Vector2((float)scoreGreen / (float)targetGreen, 1);
             }
 
             // count total score in white

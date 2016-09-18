@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-
     public GameObject levelManager; // mainly here for testing main scene
     public GameObject vfx; // for debugging
 
@@ -26,13 +25,16 @@ public class GameController : MonoBehaviour
     public Text gameOverText;
     public Text restartText;
     public int targetSpecial;
+    public float targetSpecialIncrement;
 
-    private int baseTargetSpecial;
+    private PlayerController playerController;
 
     private bool gameOver;
     private bool restart;
     private int score;
     private int wave;
+    private int scoreSpecial;
+    private int baseTargetSpecial;
 
     void Awake() // mainly here for testing main scene
     {
@@ -44,16 +46,29 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        // initialize variables and GUI texts
+        // Try to find the player
+        try
+        {
+            playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        }
+        catch (System.NullReferenceException)
+        {
+            playerController = null;
+        }
+
+        // initialize variables and UI
         gameOver = false;
         restart = false;
         restartText.text = "";
         gameOverText.text = "";
         score = 0;
         wave = 0;
+        scoreSpecial = 0;
         baseTargetSpecial = targetSpecial;
         UpdateScore();
         UpdateWave();
+
+        specialBar.rectTransform.anchorMax = new Vector2(scoreSpecial / targetSpecial, 1);
 
         // start spawning hazards
         StartCoroutine(SpawnWaves());
@@ -117,12 +132,23 @@ public class GameController : MonoBehaviour
     public void AddScore(int newScoreValue)
     {
         score += newScoreValue;
+        scoreSpecial += newScoreValue;
         UpdateScore(); // update score in UI
     }
 
     void UpdateScore()
     {
         scoreText.text = "" + score;
+        specialBar.rectTransform.anchorMax = new Vector2((float)scoreSpecial / (float)targetSpecial, 1);
+
+        if (scoreSpecial >= targetSpecial && playerController != null)
+        {
+            playerController.StartPowerup(5);
+            scoreSpecial -= targetSpecial;
+
+            // increase target
+            targetSpecial = targetSpecial + Mathf.FloorToInt(baseTargetSpecial * targetSpecialIncrement);
+        }
     }
 
     void UpdateWave()
