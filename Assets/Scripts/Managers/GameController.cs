@@ -112,7 +112,7 @@ public class GameController : MonoBehaviour
     public void AddScore(int newScoreValue)
     {
         score += newScoreValue;
-        UpdateScore(); // update score in GUI text
+        UpdateScore(); // update score in UI
     }
 
     void UpdateScore()
