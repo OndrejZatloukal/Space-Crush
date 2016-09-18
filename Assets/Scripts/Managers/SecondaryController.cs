@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class SecondaryController : MonoBehaviour
 {
@@ -10,12 +11,10 @@ public class SecondaryController : MonoBehaviour
     [HideInInspector]
     public int ySpawn;
 
-    //public GUIText mouseText;
-    //public GUIText redScore;
-    //public GUIText blueScore;
-    //public GUIText yellowScore;
-    //public GUIText greenScore;
-    //public GUIText whiteScore;
+    public Image shieldBar;
+    public Image fireRateBar;
+    public Image doubleFireBar;
+    public Image speedBar;
 
     public new Camera camera;
 
@@ -33,9 +32,9 @@ public class SecondaryController : MonoBehaviour
     public int targetRed;
     public int targetYellow;
     public int targetGreen;
-    public int targetWhite;
+    //public int targetWhite;
 
-    private int baseTargetWhite;
+    //private int baseTargetWhite;
 
     private GameObject[][] grid = new GameObject[gridX][];
     private List<GameObject> Match = new List<GameObject>();
@@ -79,14 +78,14 @@ public class SecondaryController : MonoBehaviour
         scoreYellow = 0;
         scoreGreen = 0;
         scoreWhite = 0;
-        baseTargetWhite = targetWhite;
+        //baseTargetWhite = targetWhite;
 
         //banner.SetActive(false);
 
-        //redScore.text = "Fire Rate: " + scoreRed + " / " + targetRed;
-        //blueScore.text = "Shield Up: " + scoreBlue + " / " + targetBlue;
-        //yellowScore.text = "Double Fire: " + scoreYellow + " / " + targetYellow;
-        //greenScore.text = "Speed Up: " + scoreGreen + " / " + targetGreen;
+        shieldBar.rectTransform.anchorMax = new Vector2((float)scoreBlue / (float)targetBlue, 1);
+        fireRateBar.rectTransform.anchorMax = new Vector2((float)scoreRed / (float)targetRed, 1);
+        doubleFireBar.rectTransform.anchorMax = new Vector2((float)scoreYellow / (float)targetYellow, 1);
+        speedBar.rectTransform.anchorMax = new Vector2((float)scoreGreen / (float)targetGreen, 1);
         //whiteScore.text = "Turret On: " + scoreWhite + " / " + targetWhite;
 
         // Create 2D grid
@@ -429,7 +428,8 @@ public class SecondaryController : MonoBehaviour
                     scoreBlue -= targetBlue;
                 }
 
-                //blueScore.text = "Shield Up: " + scoreBlue + " / " + targetBlue;
+                // display score in progress bar
+                shieldBar.rectTransform.anchorMax = new Vector2((float)scoreBlue / (float)targetBlue, 1);
             }
             else if (tag == "PowerupFireRate")
             {
@@ -441,7 +441,8 @@ public class SecondaryController : MonoBehaviour
                     scoreRed -= targetRed;
                 }
 
-                //redScore.text = "Fire Rate: " + scoreRed + " / " + targetRed;
+                // display score in progress bar
+                fireRateBar.rectTransform.anchorMax = new Vector2((float)scoreRed / (float)targetRed, 1);
             }
             else if (tag == "PowerupDoubleFire")
             {
@@ -453,7 +454,8 @@ public class SecondaryController : MonoBehaviour
                     scoreYellow -= targetYellow;
                 }
 
-                //yellowScore.text = "Double Fire: " + scoreYellow + " / " + targetYellow;
+                // display score in progress bar
+                doubleFireBar.rectTransform.anchorMax = new Vector2((float)scoreYellow / (float)targetYellow, 1);
             }
             else if (tag == "PowerupSpeed")
             {
@@ -465,19 +467,20 @@ public class SecondaryController : MonoBehaviour
                     scoreGreen -= targetGreen;
                 }
 
-                //greenScore.text = "Speed Up: " + scoreGreen + " / " + targetGreen;
+                // display score in progress bar
+                speedBar.rectTransform.anchorMax = new Vector2((float)scoreGreen / (float)targetGreen, 1);
             }
 
             // count total score in white
             scoreWhite += matchScore * (count - 2);
 
-            if (scoreWhite >= targetWhite && player != null)
-            {
-                player.StartPowerup(5);
-                //scoreWhite -= targetWhite;
-                //targetWhite = Mathf.FloorToInt(targetWhite * 2.2f);
-                targetWhite = targetWhite + baseTargetWhite + Mathf.FloorToInt(baseTargetWhite * (0.2f * (targetWhite / baseTargetWhite)));
-            }
+            //if (scoreWhite >= targetWhite && player != null)
+            //{
+            //    player.StartPowerup(5);
+            //    //scoreWhite -= targetWhite;
+            //    //targetWhite = Mathf.FloorToInt(targetWhite * 2.2f);
+            //    //targetWhite = targetWhite + baseTargetWhite + Mathf.FloorToInt(baseTargetWhite * (0.2f * (targetWhite / baseTargetWhite)));
+            //}
 
             //whiteScore.text = "Turret On: " + scoreWhite + " / " + targetWhite;
 

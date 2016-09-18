@@ -31,13 +31,13 @@ public class DestroyByContact : MonoBehaviour
         // Explosion
 		if (explosion != null) 
 		{
-			Instantiate (explosion, transform.position, transform.rotation);
+			Instantiate (explosion, transform.position, Quaternion.Euler(0.0f, 0.0f, Random.Range(0, 359)));
 		}
 
         //Player Explosion
         if (other.tag == "Player")
         {
-            Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
+            Instantiate(playerExplosion, other.transform.position, Quaternion.Euler(0.0f, 0.0f, 0.0f));
             gameController.GameOver();
         }
         else

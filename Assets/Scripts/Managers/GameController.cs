@@ -22,8 +22,12 @@ public class GameController : MonoBehaviour
 
     public Text scoreText;
     public Text waveText;
+    public Image specialBar;
     public Text gameOverText;
     public Text restartText;
+    public int targetSpecial;
+
+    private int baseTargetSpecial;
 
     private bool gameOver;
     private bool restart;
@@ -47,6 +51,7 @@ public class GameController : MonoBehaviour
         gameOverText.text = "";
         score = 0;
         wave = 0;
+        baseTargetSpecial = targetSpecial;
         UpdateScore();
         UpdateWave();
 

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 9e73ab9e04cdeb946a9069330edd8403
-timeCreated: 1474142370
+timeCreated: 1474185576
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -79,6 +79,8 @@ TextureImporter:
     21300144: slice280_280_72
     21300146: slice280_280_73
     21300148: slice280_280_74
+    21300150: slice280_280_75
+    21300152: slice280_280_76
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -1094,6 +1096,32 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1120
+        y: 0
+        width: 280
+        height: 280
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: slice280_280_75
+      rect:
+        serializedVersion: 2
+        x: 1400
+        y: 0
+        width: 280
+        height: 280
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: slice280_280_76
+      rect:
+        serializedVersion: 2
+        x: 1680
         y: 0
         width: 280
         height: 280
