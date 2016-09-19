@@ -261,6 +261,11 @@ public class PlayerController : MonoBehaviour
         powerupUI.Deactive(1);
     } // end ShieldDown
 
+    public void ShieldDownDelayed(float time)
+    {
+        Invoke("ShieldDown", time);
+    } // end ShieldDownDelayed
+
     private IEnumerator FireRate()
     {
         fireRateDown = Time.time + powerupTime;

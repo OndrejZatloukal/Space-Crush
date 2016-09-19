@@ -24,14 +24,25 @@ public class DestroyByContact : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Boundary") || other.CompareTag("Enemy") )//|| other.CompareTag("Powerup") || this.tag == "Dead")
+        if (other.CompareTag("Boundary") || other.CompareTag("Enemy") || this.tag == "Dead")//|| other.CompareTag("Powerup")
         {
             return;
         }
+
         // Explosion
 		if (explosion != null) 
 		{
-			Instantiate (explosion, transform.position, Quaternion.Euler(0.0f, 0.0f, Random.Range(0, 359)));
+            MissileController missileController = GetComponent<MissileController>();
+
+            if (missileController != null)
+            {
+                GameObject Explosion = Instantiate(explosion, transform.position, transform.rotation) as GameObject;
+                Explosion.GetComponent<BlastController>().blastRadius = missileController.triggerRadius;
+            }
+            else
+            {
+                Instantiate(explosion, transform.position, Quaternion.Euler(0.0f, 0.0f, Random.Range(0, 359)));
+            }
 		}
 
         //Player Explosion
@@ -45,17 +56,26 @@ public class DestroyByContact : MonoBehaviour
             gameController.AddScore(scoreValue);
         }
 
-        //if (other.tag != "Explosion" && other.tag != "Shield")
-        if (other.tag != "Shield")
+        if (other.tag != "Explosion" && other.tag != "Shield")
         {
             Destroy(other.gameObject);
         }
 
         if (other.tag == "Shield")
         {
-            other.GetComponentInParent<PlayerController>().ShieldDown();
+            if (CompareTag("Explosion"))
+            {
+                other.GetComponentInParent<PlayerController>().ShieldDownDelayed(.2f);
+            }
+            else
+            {
+                other.GetComponentInParent<PlayerController>().ShieldDown();
+            }
         }
 
-        Destroy(gameObject);
+        if (!CompareTag("Explosion"))
+        {
+            Destroy(gameObject);
+        }
     }
 }
