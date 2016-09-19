@@ -12,17 +12,17 @@ public class EvasiveManouver : MonoBehaviour
 	public Boundary boundary;
 
 	private float currentSpeed;
-	private float targetManouver;
+    protected float targetManouver;
 	private Rigidbody2D rb;
 
-	void Start() 
+	protected virtual void Start() 
 	{
 		rb = GetComponent <Rigidbody2D> ();
 		currentSpeed = rb.velocity.y;
-		StartCoroutine (Evade ());
+		StartCoroutine (SetManouver());
 	}
 
-	IEnumerator Evade()
+	protected virtual IEnumerator SetManouver()
 	{
 		yield return new WaitForSeconds (Random.Range (startWait.x, startWait.y));
 
