@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     public GameObject levelManager; // mainly here for testing main scene
+    public GameObject soundManager; // mainly here for testing main scene
     public GameObject vfx; // for debugging
 
     public GameObject[] hazards;
@@ -44,6 +45,11 @@ public class GameController : MonoBehaviour
         if (LevelManager.instance == null)
         {
             Instantiate(levelManager);
+        }
+
+        if (SoundManager.instance == null)
+        {
+            Instantiate(soundManager);
         }
     }
 
@@ -171,6 +177,8 @@ public class GameController : MonoBehaviour
         // deactivate Crush game
         powerupUI.TurretOverlayDeactive();
         secondaryController.DeactivateMouse();
+
+        SoundManager.instance.StopBackgroundMusic();
 
         Invoke("Restart", restartWait);
     }

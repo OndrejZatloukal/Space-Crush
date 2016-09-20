@@ -198,10 +198,10 @@ public class SecondaryController : MonoBehaviour
         }
 
         bool run = checkMatch();
-        Debug.Log(run);
+        //Debug.Log(run);
         while (run)
         {
-            Debug.Log("InitLoop");
+            //Debug.Log("InitLoop");
             deleteMatches();
             yield return new WaitForSeconds(0.05f);
 
@@ -314,7 +314,7 @@ public class SecondaryController : MonoBehaviour
                 if (tempMatch.Count >= 3)
                 {
                     ret = true;
-                    Debug.Log("Horizontal match on object y." + i + " x." + ii + "; counted: " + tempMatch.Count + "; of type: " + grid[ii][i].tag);
+                    //Debug.Log("Horizontal match on object y." + i + " x." + ii + "; counted: " + tempMatch.Count + "; of type: " + grid[ii][i].tag);
                     foreach (GameObject x in tempMatch)
                     {
                         Match.Add(x);
@@ -349,7 +349,7 @@ public class SecondaryController : MonoBehaviour
                 if (tempMatch.Count >= 3)
                 {
                     ret = true;
-                    Debug.Log("Vertical match on object x." + i + " y." + ii + "; counted: " + tempMatch.Count + "; of type: " + grid[i][ii].tag);
+                    //Debug.Log("Vertical match on object x." + i + " y." + ii + "; counted: " + tempMatch.Count + "; of type: " + grid[i][ii].tag);
                     foreach (GameObject x in tempMatch)
                     {
                         Match.Add(x);
@@ -385,7 +385,7 @@ public class SecondaryController : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
             yield return StartCoroutine(spawnPowerups());
             yield return new WaitForSeconds(0.05f);
-            Debug.Log("Finsihed checkCycle");
+            //Debug.Log("Finsihed checkCycle");
             run = checkMatch();
         }
 

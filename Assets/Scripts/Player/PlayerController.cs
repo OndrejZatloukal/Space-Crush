@@ -112,6 +112,8 @@ public class PlayerController : MonoBehaviour
                 (Instantiate(shotFlash, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.eulerAngles.z)) as GameObject).transform.parent = transform;
                 Instantiate(shot, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.eulerAngles.z));
             };
+
+            SoundManager.instance.PlayPlayerShot();
         }
 
         // Debug commands
@@ -194,6 +196,8 @@ public class PlayerController : MonoBehaviour
 
                     (Instantiate(shotFlashTurret, turretShotSpawns[turretShotSpawnActive].position, Quaternion.Euler(0.0f, 0.0f, turretShotSpawns[turretShotSpawnActive].rotation.eulerAngles.z)) as GameObject).transform.parent = transform;
                     Instantiate(turretShot, turretShotSpawns[turretShotSpawnActive].position, Quaternion.Euler(0.0f, 0.0f, turretShotSpawns[turretShotSpawnActive].rotation.eulerAngles.z));
+
+                    SoundManager.instance.PlayTurretShot();
 
                     // toggle between shot spawns
                     turretShotSpawnActive = 1 - turretShotSpawnActive;

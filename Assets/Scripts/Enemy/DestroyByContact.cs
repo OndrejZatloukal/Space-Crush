@@ -4,6 +4,7 @@ using System.Collections;
 public class DestroyByContact : MonoBehaviour
 {
     public GameObject explosion;
+    public AudioClip explosionSound;
     public GameObject playerExplosion;
     public int scoreValue;
 
@@ -43,12 +44,18 @@ public class DestroyByContact : MonoBehaviour
             {
                 Instantiate(explosion, transform.position, Quaternion.Euler(0.0f, 0.0f, Random.Range(0, 359)));
             }
-		}
+
+            if (explosionSound != null)
+            {
+                SoundManager.instance.PlayExplosion(explosionSound);
+            }
+        }
 
         //Player Explosion
         if (other.tag == "Player")
         {
             Instantiate(playerExplosion, other.transform.position, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+            SoundManager.instance.PlayPlayerExplosion();
             gameController.GameOver();
         }
         else
