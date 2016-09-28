@@ -14,8 +14,8 @@ public class GameController : MonoBehaviour
     public GameObject[] hazards;
     public int hazardCount;
     public int hazardCountInc;
-    public float hazardType;
-    public float hazardIncrease;
+    public int hazardsActive;
+    public int difficultyIncrease;
 
     public Vector2 spawnValues;
     public float spawnWait;
@@ -39,6 +39,7 @@ public class GameController : MonoBehaviour
     private PowerupUI powerupUI;
     private PlayerController playerController;
 
+    private float hazardSpeed;
     private bool gameOver;
     private bool restart;
     private int score;
@@ -76,6 +77,7 @@ public class GameController : MonoBehaviour
         }
 
         // initialize variables and UI
+        hazardSpeed = 1;
         paused = false;
         gameOver = false;
         restart = false;
@@ -125,6 +127,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Unpause();
+                SetDefaultCursor();
                 LevelManager.instance.LoadLevel("01a Main Menu");
             }
         }
@@ -154,10 +157,18 @@ public class GameController : MonoBehaviour
             // spawn the appropriate amount of hazards for this wave
             for (int i = 0; i < hazardCount; i++)
             {
-                GameObject hazard = hazards[Random.Range(0, Mathf.FloorToInt(hazardType + .00001f))];
+                GameObject hazard = hazards[Random.Range(0, hazardsActive)];
                 Vector2 spawnPosition = new Vector2(Random.Range(-spawnValues.x, spawnValues.x), spawnValues.y);
                 Quaternion spawnRotation = Quaternion.identity;
-                Instantiate(hazard, spawnPosition, spawnRotation);
+                if (hazardSpeed == 1)
+                {
+                    Instantiate(hazard, spawnPosition, spawnRotation);
+                }
+                else
+                {
+                    GameObject newHazard = Instantiate(hazard, spawnPosition, spawnRotation) as GameObject;
+                    newHazard.GetComponent<Mover>().speed *= hazardSpeed;
+                }
                 yield return new WaitForSeconds(spawnWait);
             }
 
@@ -165,7 +176,22 @@ public class GameController : MonoBehaviour
 
             // increase the amount and types of hazards for next wave
             hazardCount += hazardCountInc;
-            hazardType = Mathf.Min(hazardType + (1 / hazardIncrease), hazards.Length);
+            if (wave % difficultyIncrease == 0)
+            {
+                if (hazardsActive < hazards.Length)
+                {
+                    ++hazardsActive;
+                }
+                else
+                {
+                    hazardSpeed += 0.2f;
+                    if (spawnWait > 0.05f)
+                    {
+                        spawnWait -= 0.02f;
+                        waveWait -= 0.05f;
+                    }
+                }
+            }
 
             if (gameOver)
             {
@@ -206,9 +232,9 @@ public class GameController : MonoBehaviour
         gameOver = true;
 
         // deactivate Crush game
-        powerupUI.TurretOverlayDeactive();
+        powerupUI.TurretOverlayDeactive(); // in case the turret overlay was active when the player got destroyed
         secondaryController.DeactivateMouse();
-        SetDefaultCursor(); // in case the turret cursor was active when the play got destroyed
+        SetDefaultCursor(); // in case the turret cursor was active when the player got destroyed
 
         SoundManager.instance.StopBackgroundMusic();
 
