@@ -63,6 +63,7 @@ public class PlayerController : MonoBehaviour
     private float turretFireRate;
     private float nextTurretFire;
     private int turretShotSpawnActive;
+    private bool turretCursor;
 
     private Vector3 mouseVector;
 
@@ -98,6 +99,7 @@ public class PlayerController : MonoBehaviour
         turret.SetActive(false);
         turretFireRate = fireRate;
         turretShotSpawnActive = 0;
+        turretCursor = false;
 
         // set shield state
         if (startShield)
@@ -190,6 +192,13 @@ public class PlayerController : MonoBehaviour
             // if the mouse is on the Space game screen
             if (mouseVector.x <= 7)
             {
+                // turret cursor
+                if (!turretCursor)
+                {
+                    gameController.SetTurretCursor();
+                    turretCursor = true;
+                }
+
                 //turret rotation
                 Vector3 relative = mouseVector - turret.transform.position;
 
@@ -215,6 +224,12 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                if (turretCursor)
+                {
+                    gameController.SetDefaultCursor();
+                    turretCursor = false;
+                }
+
                 turret.transform.rotation = Quaternion.Euler(
                     0.0f,
                     turret.transform.rotation.eulerAngles.y,
@@ -362,6 +377,12 @@ public class PlayerController : MonoBehaviour
             turret.SetActive(false);
             sprite.sprite = defaultSprite;
             powerupUI.TurretOverlayDeactive();
+
+            if (turretCursor) // if the turret cursor is the current cursor
+            {
+                gameController.SetDefaultCursor(); // change back to the default cursor
+                turretCursor = false;
+            }
         }
     } // end IEnumerator Turret
 } // end class PlayerController

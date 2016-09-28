@@ -8,6 +8,9 @@ public class GameController : MonoBehaviour
     public GameObject soundManager; // mainly here for testing main scene
     public GameObject vfx; // for debugging
 
+    public Texture2D defaultCursor;
+    public Texture2D turretCursor;
+
     public GameObject[] hazards;
     public int hazardCount;
     public int hazardCountInc;
@@ -205,6 +208,7 @@ public class GameController : MonoBehaviour
         // deactivate Crush game
         powerupUI.TurretOverlayDeactive();
         secondaryController.DeactivateMouse();
+        SetDefaultCursor(); // in case the turret cursor was active when the play got destroyed
 
         SoundManager.instance.StopBackgroundMusic();
 
@@ -237,5 +241,15 @@ public class GameController : MonoBehaviour
             paused = false;
             secondaryController.ReactivateMouse();
         }
+    }
+
+    public void SetDefaultCursor()
+    {
+        Cursor.SetCursor(defaultCursor, new Vector2(20, 10), CursorMode.Auto);
+    }
+
+    public void SetTurretCursor()
+    {
+        Cursor.SetCursor(turretCursor, new Vector2(25, 25), CursorMode.Auto);
     }
 }
