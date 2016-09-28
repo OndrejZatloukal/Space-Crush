@@ -28,6 +28,9 @@ public class GameController : MonoBehaviour
     public Text finalWaveText;
     public int targetSpecial;
     public float targetSpecialIncrement;
+    public bool debug;
+    [HideInInspector]
+    public bool paused;
 
     private SecondaryController secondaryController;
     private PowerupUI powerupUI;
@@ -70,6 +73,7 @@ public class GameController : MonoBehaviour
         }
 
         // initialize variables and UI
+        paused = false;
         gameOver = false;
         restart = false;
         gameOverOverlay.SetActive(false);
@@ -98,17 +102,41 @@ public class GameController : MonoBehaviour
                 LevelManager.instance.RestartLevel();
             }
         }
+        // Or press R to unpause the game when paused
+        else if (paused)
+        {
+            if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.JoystickButton7))
+            {
+                Unpause();
+            }
+        }
 
         // Press escape to go back to menu
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton6))
         {
-            LevelManager.instance.LoadLevel("01a Main Menu");
+            // Or press escape to pause the game when in debug mode
+            if (debug && !paused && !gameOver)
+            {
+                Pause();
+            }
+            else
+            {
+                Unpause();
+                LevelManager.instance.LoadLevel("01a Main Menu");
+            }
         }
 
         // Debug VFX
-        if (Input.GetKeyDown(KeyCode.X))
+        if (debug && Input.GetKeyDown(KeyCode.X) && vfx != null)
         {
             Instantiate(vfx, new Vector3(0, 2, 0), Quaternion.Euler(0,0,0));
+        }
+
+        // Activate debug mode
+        if (!debug && Input.GetKeyDown(KeyCode.KeypadMultiply))
+        {
+            debug = true;
+            playerController.debugPlayer = true;
         }
     }
 
@@ -189,5 +217,25 @@ public class GameController : MonoBehaviour
         finalScoreText.text = "" + score;
         finalWaveText.text = "" + wave;
         restart = true;
+    }
+
+    public void Pause()
+    {
+        if (!paused)
+        {
+            Time.timeScale = 0.0f;
+            paused = true;
+            secondaryController.DeactivateMouse();
+        }
+    }
+
+    public void Unpause()
+    {
+        if (paused)
+        {
+            Time.timeScale = 1.0f;
+            paused = false;
+            secondaryController.ReactivateMouse();
+        }
     }
 }

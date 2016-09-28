@@ -14,6 +14,7 @@ public class Boundary
 
 public class PlayerController : MonoBehaviour
 {
+    private GameController gameController;
     private PowerupUI powerupUI;
     private Rigidbody2D rb;
     private new PolygonCollider2D collider;
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour
     public float powerupTime;
 
     public bool startShield;
+    [HideInInspector]
     public bool debugPlayer;
 
     private float nextFire;
@@ -70,7 +72,12 @@ public class PlayerController : MonoBehaviour
         GameObject gameControllerObject = GameObject.FindWithTag("GameController");
         if (gameControllerObject != null)
         {
+            gameController = gameControllerObject.GetComponent<GameController>();
             powerupUI = gameControllerObject.GetComponent<PowerupUI>();
+        }
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'GameController' Script");
         }
         if (powerupUI == null)
         {
@@ -97,12 +104,15 @@ public class PlayerController : MonoBehaviour
         {
             StartPowerup(1);
         }
+
+        // set debug data
+        debugPlayer = gameController.debug;
     }
 
 	void Update()
     {
         // shoot
-        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        if (Input.GetButton("Fire1") && Time.time > nextFire && !gameController.paused)
         {
             nextFire = Time.time + fireRate;
 
