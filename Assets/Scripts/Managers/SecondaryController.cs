@@ -45,6 +45,7 @@ public class SecondaryController : MonoBehaviour
 
     private bool mouseDeactive = false;
     private bool mouseActive = false;
+    private bool mouseDown;
     private Vector3 mouseVector;
     private int mousePositionX;
     private int mousePositionY;
@@ -66,6 +67,9 @@ public class SecondaryController : MonoBehaviour
 
         // Set spawn point for match objects
         ySpawn = gridY + 1;
+
+        // Initialize mouse
+        mouseDown = false;
 
         // Initialize score and score text
         scoreRed = 0;
@@ -97,9 +101,16 @@ public class SecondaryController : MonoBehaviour
         mousePositionX = Mathf.RoundToInt(mouseVector.x);
         mousePositionY = Mathf.RoundToInt(mouseVector.y);
 
-        // if the user clicks
-        if (Input.GetMouseButtonDown(0) && mousePositionX >= 0 && mousePositionX < gridX && mousePositionY >= 0 && mousePositionY < gridY && mouseActive)
+        if (Input.GetMouseButtonUp(0))
         {
+            mouseDown = false;
+        }
+
+        // if the user clicks
+        if ((Input.GetMouseButtonDown(0) || mouseDown) && mousePositionX >= 0 && mousePositionX < gridX && mousePositionY >= 0 && mousePositionY < gridY && mouseActive)
+        {
+            mouseDown = true;
+
             if (Selected.Count == 0)
             {
                 // switch to selected sprite
@@ -112,6 +123,7 @@ public class SecondaryController : MonoBehaviour
               || Selected[1] == mousePositionY && (Selected[0] == (mousePositionX - 1) || Selected[0] == (mousePositionX + 1)))
             {
                 mouseActive = false;
+                mouseDown = false;
                 grid[Selected[0]][Selected[1]].GetComponent<MatchObjectController>().ClearSelected();
 
                 Swap = grid[mousePositionX][mousePositionY];
@@ -141,7 +153,7 @@ public class SecondaryController : MonoBehaviour
                 Selected.TrimExcess();
 
             }
-            else
+            else if (mousePositionX != Selected[0] || mousePositionY != Selected[1])
             {
                 // switch back to unselected sprite
                 grid[Selected[0]][Selected[1]].GetComponent<MatchObjectController>().ClearSelected();
