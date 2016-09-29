@@ -76,6 +76,9 @@ public class GameController : MonoBehaviour
             playerController = null;
         }
 
+        // set default cursor for browsers that don't pick up Unity's custom cursor
+        SetDefaultCursor();
+
         // initialize variables and UI
         hazardSpeed = 1;
         paused = false;

@@ -32,9 +32,6 @@ public class SecondaryController : MonoBehaviour
     public int targetRed;
     public int targetYellow;
     public int targetGreen;
-    //public int targetWhite;
-
-    //private int baseTargetWhite;
 
     private GameObject[][] grid = new GameObject[gridX][];
     private List<GameObject> Match = new List<GameObject>();
@@ -51,8 +48,6 @@ public class SecondaryController : MonoBehaviour
     private Vector3 mouseVector;
     private int mousePositionX;
     private int mousePositionY;
-
-    //public GameObject banner;
 
     void Start()
     {
@@ -78,9 +73,6 @@ public class SecondaryController : MonoBehaviour
         scoreYellow = 0;
         scoreGreen = 0;
         scoreWhite = 0;
-        //baseTargetWhite = targetWhite;
-
-        //banner.SetActive(false);
 
         shieldBar.rectTransform.anchorMax = new Vector2((float)scoreBlue / (float)targetBlue, 1);
         fireRateBar.rectTransform.anchorMax = new Vector2((float)scoreRed / (float)targetRed, 1);
@@ -120,9 +112,6 @@ public class SecondaryController : MonoBehaviour
               || Selected[1] == mousePositionY && (Selected[0] == (mousePositionX - 1) || Selected[0] == (mousePositionX + 1)))
             {
                 mouseActive = false;
-                //// switch to selected sprite
-                //grid[mousePositionX][mousePositionY].GetComponent<MatchObjectController>().SetSelected();
-                // switch back to unselected sprite
                 grid[Selected[0]][Selected[1]].GetComponent<MatchObjectController>().ClearSelected();
 
                 Swap = grid[mousePositionX][mousePositionY];
@@ -146,10 +135,6 @@ public class SecondaryController : MonoBehaviour
                     StartCoroutine(revertSwap(Selected[0], Selected[1], mousePositionX, mousePositionY, Swap));
                 }
 
-                //// switch back to unselected sprite
-                //grid[mousePositionX][mousePositionY].GetComponent<MatchObjectController>().ClearSelected();
-                //Swap.GetComponent<MatchObjectController>().ClearSelected();
-
                 Swap = null;
 
                 Selected.Clear();
@@ -165,18 +150,6 @@ public class SecondaryController : MonoBehaviour
                 Selected.TrimExcess();
             }
         }
-
-        //mouseText.text = "Mouse position: (" + mousePositionX + ", " + mousePositionY + ")";
-
-        //// Make mouseText red when mouse inactive for debugging
-        //if (mouseActive)
-        //{
-        //    mouseText.color = Color.white;
-        //}
-        //else
-        //{
-        //    mouseText.color = new Color(1, 0, 0, 1);
-        //}
     } // end function Update
 
     // Spawn initial playfield
@@ -247,8 +220,47 @@ public class SecondaryController : MonoBehaviour
         mouseActive = true;
     } // end co-routine InitSpawnPowerups
 
+    //// Powerup Spawner
+    //IEnumerator spawnPowerups()
+    //{
+    //    for (int i = 0; i < gridX; i++)
+    //    {
+    //        bool spawnNew = false;
+    //        for (int ii = 0; ii < gridY; ii++)
+    //        {
+    //            if (!spawnNew && grid[i][ii] == null)
+    //            {
+    //                spawnNew = true;
+    //                for (int iii = ii + 1; iii < gridY; iii++)
+    //                {
+    //                    if (grid[i][iii] != null)
+    //                    {
+    //                        grid[i][ii] = grid[i][iii];
+    //                        grid[i][ii].GetComponent<MatchObjectController>().yPos = ii;
+    //                        grid[i][iii] = null;
+    //                        spawnNew = false;
+    //                        break;
+    //                    }
+    //                }
+    //            }
+
+    //            if (spawnNew)
+    //            {
+    //                GameObject powerup = powerups[Random.Range(0, powerups.Length)];
+    //                Vector3 spawnPosition = new Vector3(i, gridY, zOffset);
+    //                Quaternion spawnRotation = Quaternion.identity;
+    //                GameObject spawned = Instantiate(powerup, spawnPosition, spawnRotation) as GameObject;
+    //                spawned.GetComponent<MatchObjectController>().xPos = i;
+    //                spawned.GetComponent<MatchObjectController>().yPos = ii;
+    //                grid[i][ii] = spawned;
+    //                yield return new WaitForSeconds(0.025f);
+    //            }
+    //        }
+    //    }
+    //} // end co-routine spawnPowerups
+
     // Powerup Spawner
-    IEnumerator spawnPowerups()
+    void spawnPowerupsNoRoutine()
     {
         for (int i = 0; i < gridX; i++)
         {
@@ -280,11 +292,10 @@ public class SecondaryController : MonoBehaviour
                     spawned.GetComponent<MatchObjectController>().xPos = i;
                     spawned.GetComponent<MatchObjectController>().yPos = ii;
                     grid[i][ii] = spawned;
-                    yield return new WaitForSeconds(0.025f);
                 }
             }
         }
-    } // end co-routine spawnPowerups
+    } // end spawnPowerups
 
     // Check for matches
     bool checkMatch()
@@ -383,7 +394,8 @@ public class SecondaryController : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
             deleteMatches();
             yield return new WaitForSeconds(0.05f);
-            yield return StartCoroutine(spawnPowerups());
+            //yield return StartCoroutine(spawnPowerups());
+            spawnPowerupsNoRoutine();
             yield return new WaitForSeconds(0.05f);
             //Debug.Log("Finsihed checkCycle");
             run = checkMatch();
@@ -473,16 +485,6 @@ public class SecondaryController : MonoBehaviour
 
             // count total score in white
             scoreWhite += matchScore * (count - 2);
-
-            //if (scoreWhite >= targetWhite && player != null)
-            //{
-            //    player.StartPowerup(5);
-            //    //scoreWhite -= targetWhite;
-            //    //targetWhite = Mathf.FloorToInt(targetWhite * 2.2f);
-            //    //targetWhite = targetWhite + baseTargetWhite + Mathf.FloorToInt(baseTargetWhite * (0.2f * (targetWhite / baseTargetWhite)));
-            //}
-
-            //whiteScore.text = "Turret On: " + scoreWhite + " / " + targetWhite;
 
             // Add score to combined total
             gameController.AddScore(matchScore * (count - 2));

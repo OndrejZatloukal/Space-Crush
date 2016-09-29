@@ -184,7 +184,6 @@ public class PlayerController : MonoBehaviour
         shield.transform.rotation = Quaternion.Euler(0.0f, rb.velocity.x * +tilt, 0.0f);
 
         // if turret powerup active
-        //if (turretActive)
         if (turret.activeSelf)
         {
             mouseVector = camera.ScreenToWorldPoint(Input.mousePosition);
