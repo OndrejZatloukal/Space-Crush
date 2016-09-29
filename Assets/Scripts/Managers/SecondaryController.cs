@@ -124,6 +124,7 @@ public class SecondaryController : MonoBehaviour
             {
                 mouseActive = false;
                 mouseDown = false;
+
                 grid[Selected[0]][Selected[1]].GetComponent<MatchObjectController>().ClearSelected();
 
                 Swap = grid[mousePositionX][mousePositionY];
