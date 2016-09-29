@@ -274,11 +274,11 @@ public class GameController : MonoBehaviour
 
     public void SetDefaultCursor()
     {
-        Cursor.SetCursor(defaultCursor, new Vector2(16, 8), CursorMode.Auto);
+        Cursor.SetCursor(defaultCursor, new Vector2(16, 8), CursorMode.ForceSoftware);
     }
 
     public void SetTurretCursor()
     {
-        Cursor.SetCursor(turretCursor, new Vector2(20, 20), CursorMode.Auto);
+        Cursor.SetCursor(turretCursor, new Vector2(20, 20), CursorMode.ForceSoftware);
     }
 }
