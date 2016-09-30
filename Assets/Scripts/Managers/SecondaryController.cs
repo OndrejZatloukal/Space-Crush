@@ -36,7 +36,6 @@ public class SecondaryController : MonoBehaviour
     private GameObject[][] grid = new GameObject[gridX][];
     private List<GameObject> Match = new List<GameObject>();
     private List<int> Selected = new List<int>();
-    private GameObject Swap;
 
     private GameController gameController;
     private PlayerController player;
@@ -125,19 +124,23 @@ public class SecondaryController : MonoBehaviour
                 mouseActive = false;
                 mouseDown = false;
 
-                grid[Selected[0]][Selected[1]].GetComponent<MatchObjectController>().ClearSelected();
+                MatchObjectController oldSelectedObject = grid[Selected[0]][Selected[1]].GetComponent<MatchObjectController>();
+                MatchObjectController newSelectedObject = grid[mousePositionX][mousePositionY].GetComponent<MatchObjectController>();
 
-                Swap = grid[mousePositionX][mousePositionY];
+                oldSelectedObject.ClearSelected();
+
+                GameObject Swap = grid[mousePositionX][mousePositionY];
 
                 grid[mousePositionX][mousePositionY] = grid[Selected[0]][Selected[1]];
-                grid[mousePositionX][mousePositionY].GetComponent<MatchObjectController>().xPos = mousePositionX;
-                grid[mousePositionX][mousePositionY].GetComponent<MatchObjectController>().yPos = mousePositionY;
-                grid[mousePositionX][mousePositionY].GetComponent<MatchObjectController>().swap = true;
+                oldSelectedObject.xPos = mousePositionX;
+                oldSelectedObject.yPos = mousePositionY;
+                oldSelectedObject.swap = true;
+                oldSelectedObject.SortUp();
 
                 grid[Selected[0]][Selected[1]] = Swap;
-                grid[Selected[0]][Selected[1]].GetComponent<MatchObjectController>().xPos = Selected[0];
-                grid[Selected[0]][Selected[1]].GetComponent<MatchObjectController>().yPos = Selected[1];
-                grid[Selected[0]][Selected[1]].GetComponent<MatchObjectController>().swap = true;
+                newSelectedObject.xPos = Selected[0];
+                newSelectedObject.yPos = Selected[1];
+                newSelectedObject.swap = true;
 
                 if (checkMatch())
                 {
@@ -145,7 +148,7 @@ public class SecondaryController : MonoBehaviour
                 }
                 else
                 {
-                    StartCoroutine(revertSwap(Selected[0], Selected[1], mousePositionX, mousePositionY, Swap));
+                    StartCoroutine(revertSwap(Selected[0], Selected[1], mousePositionX, mousePositionY, oldSelectedObject, newSelectedObject, Swap));
                 }
 
                 Swap = null;
@@ -420,18 +423,19 @@ public class SecondaryController : MonoBehaviour
         }
     } // end co-routine checkCycle
 
-    IEnumerator revertSwap(int x, int y, int mousePositionX, int mousePositionY, GameObject Swap)
+    IEnumerator revertSwap(int x, int y, int mousePositionX, int mousePositionY, MatchObjectController oldSelectedObject, MatchObjectController newSelectedObject, GameObject Swap)
     {
         yield return new WaitForSeconds(0.25f);
         grid[x][y] = grid[mousePositionX][mousePositionY];
-        grid[x][y].GetComponent<MatchObjectController>().xPos = x;
-        grid[x][y].GetComponent<MatchObjectController>().yPos = y;
-        grid[x][y].GetComponent<MatchObjectController>().swap = true;
+        oldSelectedObject.xPos = x;
+        oldSelectedObject.yPos = y;
+        oldSelectedObject.swap = true;
 
         grid[mousePositionX][mousePositionY] = Swap;
-        grid[mousePositionX][mousePositionY].GetComponent<MatchObjectController>().xPos = mousePositionX;
-        grid[mousePositionX][mousePositionY].GetComponent<MatchObjectController>().yPos = mousePositionY;
-        grid[mousePositionX][mousePositionY].GetComponent<MatchObjectController>().swap = true;
+        newSelectedObject.xPos = mousePositionX;
+        newSelectedObject.yPos = mousePositionY;
+        newSelectedObject.swap = true;
+        newSelectedObject.SortUp();
 
         if (!mouseDeactive)
         {

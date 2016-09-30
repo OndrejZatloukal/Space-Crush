@@ -16,14 +16,14 @@ public class MatchObjectController : MonoBehaviour
 
     //private Transform cubeTransform;
     private int gridY;
-    private float zOffset;
+    //private float zOffset;
 
     void Start()
     {
         swap = false;
         //cubeTransform = GetComponentsInChildren<Transform> ()[1];
         gridY = GameObject.FindWithTag("GameController").GetComponent<SecondaryController>().ySpawn;
-        zOffset = GameObject.FindWithTag("GameController").GetComponent<SecondaryController>().zOffset;
+        //zOffset = GameObject.FindWithTag("GameController").GetComponent<SecondaryController>().zOffset;
 
         
     }
@@ -43,20 +43,27 @@ public class MatchObjectController : MonoBehaviour
             if (transform.position.x != xPos)
             {
                 float newPosition = Mathf.MoveTowards(transform.position.x, xPos, Time.deltaTime * smoothing * .5f);
-                transform.position = new Vector3(newPosition, transform.position.y, zOffset + (transform.position.x - xPos));
+                transform.position = new Vector3(newPosition, transform.position.y, transform.position.z);
             }
             else if (transform.position.y != yPos)
             {
                 float newPosition = Mathf.MoveTowards(transform.position.y, yPos, Time.deltaTime * smoothing * .5f);
-                transform.position = new Vector3(transform.position.x, newPosition, zOffset + (transform.position.y - yPos));
+                transform.position = new Vector3(transform.position.x, newPosition, transform.position.z);
             }
             else
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, zOffset);
+                //transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
                 swap = false;
+                icon.sortingOrder = 0;
             }
         }
     } // end FixedUpdate
+
+    public void SortUp()
+    {
+        // bring the icon up inthe sorting layer while swapping
+        icon.sortingOrder = 1;
+    }
 
     public void SetSelected()
     {
