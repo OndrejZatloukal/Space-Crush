@@ -115,14 +115,20 @@ public class SoundManager : MonoBehaviour
             StopCoroutine(coroutine);
         }
 
-        AudioClip thisLevelMusic = backgroundMusicClips[scene.buildIndex];
+        int levelType = System.Convert.ToInt32(scene.name.Substring(0, 2));
+
+        AudioClip thisLevelMusic = backgroundMusicClips[levelType];
         Debug.Log("Playing clip: " + thisLevelMusic);
 
         if (thisLevelMusic != null)
         {
-            backgroundMusic.volume = masterVolume * backgroundMusicOffset;
-            backgroundMusic.clip = thisLevelMusic;
-            backgroundMusic.Play();
+            // if not playing the menu background music or not in the menus
+            if (thisLevelMusic != backgroundMusic.clip || levelType != 1)
+            {
+                backgroundMusic.volume = masterVolume * backgroundMusicOffset;
+                backgroundMusic.clip = thisLevelMusic;
+                backgroundMusic.Play();
+            }
         }
     }
 
