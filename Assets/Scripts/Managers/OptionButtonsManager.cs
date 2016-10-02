@@ -1,25 +1,62 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class OptionButtonsManager : MonoBehaviour
 {
-    public void DisableCustomCursor()
+    public GameObject volumeSlider;
+    public GameObject customCursor;
+    public GameObject cursorMode;
+
+    void Start()
     {
-        CursorManager.instance.DisableCustomCursors();
+        volumeSlider.GetComponent<Slider>().value = SoundManager.instance.masterVolume;
+
+        if (CursorManager.instance.customCursors)
+        {
+            customCursor.GetComponent<Toggle>().isOn = true;
+        }
+        else
+        {
+            customCursor.GetComponent<Toggle>().isOn = false;
+        }
+
+        if (CursorManager.instance.cursorMode == CursorMode.ForceSoftware)
+        {
+            cursorMode.GetComponent<Toggle>().isOn = true;
+        }
+        else
+        {
+            cursorMode.GetComponent<Toggle>().isOn = false;
+        }
     }
 
-    public void EnableCustomCursors()
+    public void SetMasterVolume()
     {
-        CursorManager.instance.EnableCustomCursors();
+        SoundManager.instance.SetMasterVolume(volumeSlider.GetComponent<Slider>().value);
     }
 
-    public void CursorModeAuto()
+    public void ToggleCustomCursor()
     {
-        CursorManager.instance.SetCursoModeAuto();
+        if (customCursor.GetComponent<Toggle>().isOn)
+        {
+            CursorManager.instance.EnableCustomCursors();
+        }
+        else
+        {
+            CursorManager.instance.DisableCustomCursors();
+        }
     }
 
-    public void CursorModeForceSoftware()
+    public void ToggleCursorMode()
     {
-        CursorManager.instance.SetCursorModeForceSoftware();
+        if (cursorMode.GetComponent<Toggle>().isOn)
+        {
+            CursorManager.instance.SetCursorModeForceSoftware();
+        }
+        else
+        {
+            CursorManager.instance.SetCursoModeAuto();
+        }
     }
 }

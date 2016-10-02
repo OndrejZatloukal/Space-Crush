@@ -132,13 +132,24 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    //void applyMasterVolume()
-    //{
-    //    foreach (AudioSource audioSource in allAudioSources)
-    //    {
-    //        audioSource.volume = masterVolume;
-    //    }
-    //}
+    public void SetMasterVolume(float volume)
+    {
+        masterVolume = volume;
+
+        foreach (AudioSource audioSource in allAudioSources)
+        {
+            audioSource.volume = masterVolume;
+        }
+
+        backgroundMusic.volume *= backgroundMusicOffset;
+        playerShot.volume *= playerShotVolumeOffset;
+        turretShot.volume *= playerShotVolumeOffset;
+
+        foreach (AudioSource enemySound in enemySounds)
+        {
+            enemySound.volume *= enemyShotVolumeOffset;
+        }
+    }
 
     IEnumerator FadeOutMusic(float waitTime)
     {

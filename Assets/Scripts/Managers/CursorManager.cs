@@ -10,7 +10,8 @@ public class CursorManager : MonoBehaviour
 
     public bool customCursors;
 
-    private CursorMode cursorMode;
+    [HideInInspector]
+    public CursorMode cursorMode;
     private bool defaultCursorActive;
 
 	void Awake()
