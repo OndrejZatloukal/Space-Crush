@@ -6,10 +6,8 @@ public class GameController : MonoBehaviour
 {
     public GameObject levelManager; // mainly here for testing main scene
     public GameObject soundManager; // mainly here for testing main scene
+    public GameObject cursorManager; // mainly here for testing main scene
     public GameObject vfx; // for debugging
-
-    public Texture2D defaultCursor;
-    public Texture2D turretCursor;
 
     public GameObject[] hazards;
     public int hazardCount;
@@ -58,6 +56,11 @@ public class GameController : MonoBehaviour
         {
             Instantiate(soundManager);
         }
+
+        if (CursorManager.instance == null)
+        {
+            Instantiate(cursorManager);
+        }
     }
 
     void Start()
@@ -77,7 +80,7 @@ public class GameController : MonoBehaviour
         }
 
         // set default cursor for browsers that don't pick up Unity's custom cursor
-        SetDefaultCursor();
+        CursorManager.instance.SetDefaultCursor();
 
         // initialize variables and UI
         hazardSpeed = 1;
@@ -130,7 +133,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Unpause();
-                SetDefaultCursor();
+                CursorManager.instance.SetDefaultCursor();
                 LevelManager.instance.LoadLevel("01a Main Menu");
             }
         }
@@ -237,7 +240,7 @@ public class GameController : MonoBehaviour
         // deactivate Crush game
         powerupUI.TurretOverlayDeactive(); // in case the turret overlay was active when the player got destroyed
         secondaryController.DeactivateMouse();
-        SetDefaultCursor(); // in case the turret cursor was active when the player got destroyed
+        CursorManager.instance.SetDefaultCursor();  // in case the turret cursor was active when the player got destroyed
 
         SoundManager.instance.StopBackgroundMusic();
 
@@ -270,15 +273,5 @@ public class GameController : MonoBehaviour
             paused = false;
             secondaryController.ReactivateMouse();
         }
-    }
-
-    public void SetDefaultCursor()
-    {
-        Cursor.SetCursor(defaultCursor, new Vector2(16, 8), CursorMode.ForceSoftware);
-    }
-
-    public void SetTurretCursor()
-    {
-        Cursor.SetCursor(turretCursor, new Vector2(20, 20), CursorMode.ForceSoftware);
     }
 }

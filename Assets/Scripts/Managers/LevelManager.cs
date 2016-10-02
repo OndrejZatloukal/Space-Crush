@@ -21,7 +21,7 @@ public class LevelManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        // Load next level if levelManager gets intantiated in the spalsh screen
+        // Load next level if levelManager gets intantiated in the splash screen
         if (SceneManager.GetActiveScene().buildIndex == 0)
         {
             Invoke("LoadNextLevel", autoLoadNextLevelAfter);

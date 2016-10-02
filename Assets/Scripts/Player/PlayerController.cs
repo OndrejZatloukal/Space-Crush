@@ -194,7 +194,8 @@ public class PlayerController : MonoBehaviour
                 // turret cursor
                 if (!turretCursor)
                 {
-                    gameController.SetTurretCursor();
+                    CursorManager.instance.SetTurretCursor();
+                    //gameController.SetTurretCursor();
                     turretCursor = true;
                 }
 
@@ -225,7 +226,8 @@ public class PlayerController : MonoBehaviour
             {
                 if (turretCursor)
                 {
-                    gameController.SetDefaultCursor();
+                    CursorManager.instance.SetDefaultCursor();
+                    //gameController.SetDefaultCursor();
                     turretCursor = false;
                 }
 
@@ -379,7 +381,8 @@ public class PlayerController : MonoBehaviour
 
             if (turretCursor) // if the turret cursor is the current cursor
             {
-                gameController.SetDefaultCursor(); // change back to the default cursor
+                CursorManager.instance.SetDefaultCursor();
+                //gameController.SetDefaultCursor(); // change back to the default cursor
                 turretCursor = false;
             }
         }
