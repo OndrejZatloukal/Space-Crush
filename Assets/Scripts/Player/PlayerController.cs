@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public Sprite defaultSprite;
     public Sprite turretActiveSprite;
 
+    public int health;
     public float speed;
     public float tilt;
     public Boundary boundary;
@@ -160,6 +161,36 @@ public class PlayerController : MonoBehaviour
             {
                 StartPowerup(5);
             }
+
+            // Deactivate Shield
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                StopPowerup(1);
+            }
+
+            // Deactivate Rapid Fire
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                StopPowerup(2);
+            }
+
+            // Deactivate Double Fire
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                StopPowerup(3);
+            }
+
+            // Deactivate Speed
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                StopPowerup(4);
+            }
+
+            // Deactivate Turret
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                StopPowerup(5);
+            }
         } // end debug commands
     } // end Update
 
@@ -265,6 +296,31 @@ public class PlayerController : MonoBehaviour
         else if (index == 5)
         {
             StartCoroutine(Turret());
+        }
+    } // end StartPowerup
+
+    public void StopPowerup(int index)
+    {
+        if (index == 1)
+        {
+            ShieldDown();
+            Debug.Log("Shield Down");
+        }
+        else if (index == 2)
+        {
+            fireRateDown = 0;
+        }
+        else if (index == 3)
+        {
+            doubleFireDown = 0;
+        }
+        else if (index == 4)
+        {
+            speedDown = 0;
+        }
+        else if (index == 5)
+        {
+            turretDown = 0;
         }
     } // end StartPowerup
 

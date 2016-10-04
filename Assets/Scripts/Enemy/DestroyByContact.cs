@@ -54,16 +54,26 @@ public class DestroyByContact : MonoBehaviour
         //Player Explosion
         if (other.tag == "Player")
         {
-            Instantiate(playerExplosion, other.transform.position, Quaternion.Euler(0.0f, 0.0f, 0.0f));
-            SoundManager.instance.PlayPlayerExplosion();
-            gameController.GameOver();
+            PlayerController playerController = other.GetComponent<PlayerController>();
+
+            if (--playerController.health <= 0 || this.tag == "Explosion")
+            {
+                Destroy(other.gameObject);
+                Instantiate(playerExplosion, other.transform.position, Quaternion.Euler(0.0f, 0.0f, 0.0f));
+                SoundManager.instance.PlayPlayerExplosion();
+                gameController.GameOver();
+            }
+            else
+            {
+                playerController.StopPowerup(Random.Range(1,4));
+            }
         }
         else
         {
             gameController.AddScore(scoreValue);
         }
 
-        if (other.tag != "Explosion" && other.tag != "Shield")
+        if (other.tag != "Explosion" && other.tag != "Shield" && other.tag != "Player")
         {
             Destroy(other.gameObject);
         }
