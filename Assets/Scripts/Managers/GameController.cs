@@ -238,7 +238,7 @@ public class GameController : MonoBehaviour
         gameOver = true;
 
         // deactivate Crush game
-        powerupUI.TurretOverlayDeactive(); // in case the turret overlay was active when the player got destroyed
+        powerupUI.TurretDeactive(); // in case the turret overlay was active when the player got destroyed
         secondaryController.DeactivateMouse();
         CursorManager.instance.SetDefaultCursor();  // in case the turret cursor was active when the player got destroyed
 

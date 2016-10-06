@@ -433,7 +433,7 @@ public class PlayerController : MonoBehaviour
             turret.transform.rotation = Quaternion.Euler(0.0f, turret.transform.rotation.eulerAngles.y, 0.0f);
             turret.SetActive(false);
             sprite.sprite = defaultSprite;
-            powerupUI.TurretOverlayDeactive();
+            powerupUI.TurretDeactive();
 
             if (turretCursor) // if the turret cursor is the current cursor
             {
