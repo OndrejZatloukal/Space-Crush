@@ -523,4 +523,36 @@ public class SecondaryController : MonoBehaviour
 
         //banner.SetActive(false);
     }
+
+    public void ResetScore(int index)
+    {
+        if (index == 1)
+        {
+            scoreBlue = 0;
+
+            // display score in progress bar
+            shieldBar.rectTransform.anchorMax = new Vector2((float)scoreBlue / (float)targetBlue, 1);
+        }
+        else if (index == 2)
+        {
+            scoreRed = 0;
+
+            // display score in progress bar
+            fireRateBar.rectTransform.anchorMax = new Vector2((float)scoreRed / (float)targetRed, 1);
+        }
+        else if (index == 3)
+        {
+            scoreYellow = 0;
+
+            // display score in progress bar
+            doubleFireBar.rectTransform.anchorMax = new Vector2((float)scoreYellow / (float)targetYellow, 1);
+        }
+        else if (index == 4)
+        {
+            scoreGreen = 0;
+
+            // display score in progress bar
+            speedBar.rectTransform.anchorMax = new Vector2((float)scoreGreen / (float)targetGreen, 1);
+        }
+    }
 }

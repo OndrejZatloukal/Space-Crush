@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
 {
     private GameController gameController;
     private PowerupUI powerupUI;
+    private SecondaryController secondaryController;
     private Rigidbody2D rb;
     private new PolygonCollider2D collider;
     private Animator shotFlashBowanimator;
@@ -76,6 +77,7 @@ public class PlayerController : MonoBehaviour
         {
             gameController = gameControllerObject.GetComponent<GameController>();
             powerupUI = gameControllerObject.GetComponent<PowerupUI>();
+            secondaryController = gameControllerObject.GetComponent<SecondaryController>();
         }
         if (gameController == null)
         {
@@ -84,6 +86,10 @@ public class PlayerController : MonoBehaviour
         if (powerupUI == null)
         {
             Debug.Log("Cannot find 'PowerupUI' Script");
+        }
+        if (secondaryController == null)
+        {
+            Debug.Log("Cannot find 'SecondaryController' Script");
         }
 
         // get components
@@ -322,7 +328,13 @@ public class PlayerController : MonoBehaviour
         {
             turretDown = 0;
         }
-    } // end StartPowerup
+    } // end StopPowerup
+
+    public void StartPowerdown(int index)
+    {
+        secondaryController.ResetScore(index);
+        StopPowerup(index);
+    } // end StartPowerdown
 
     private void Shield()
     {

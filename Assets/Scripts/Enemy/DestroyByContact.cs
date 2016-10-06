@@ -65,7 +65,7 @@ public class DestroyByContact : MonoBehaviour
             }
             else
             {
-                playerController.StopPowerup(Random.Range(1,4));
+                playerController.StartPowerdown(Random.Range(1,4));
             }
         }
         else
