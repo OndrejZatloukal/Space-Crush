@@ -7,6 +7,7 @@ public class PowerupUI : MonoBehaviour {
 
     public Sprite[] sprites;
     public Image[] icons;
+    public GameObject turretIcon;
     public GameObject turretOverlay;
     public GameObject continueButton;
 
@@ -16,6 +17,7 @@ public class PowerupUI : MonoBehaviour {
     {
         secondaryController = gameObject.GetComponent<SecondaryController>();
 
+        turretIcon.SetActive(false);
         turretOverlay.SetActive(false);
         continueButton.SetActive(false);
     }
@@ -45,7 +47,14 @@ public class PowerupUI : MonoBehaviour {
             secondaryController.DeactivateMouse();
             turretOverlay.SetActive(true);
             continueButton.SetActive(true);
+            turretIcon.SetActive(true);
         }
+    }
+
+    public void TurretDeactive()
+    {
+        TurretOverlayDeactive();
+        turretIcon.SetActive(false);
     }
 
     public void TurretOverlayDeactive()
