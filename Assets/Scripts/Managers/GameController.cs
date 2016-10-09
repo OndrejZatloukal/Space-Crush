@@ -208,9 +208,12 @@ public class GameController : MonoBehaviour
 
     public void AddScore(int newScoreValue)
     {
-        score += newScoreValue;
-        scoreSpecial += newScoreValue;
-        UpdateScore(); // update score in UI
+        if (!gameOver)
+        {
+            score += newScoreValue;
+            scoreSpecial += newScoreValue;
+            UpdateScore(); // update score in UI
+        }
     }
 
     void UpdateScore()
@@ -240,9 +243,13 @@ public class GameController : MonoBehaviour
         // deactivate Crush game
         powerupUI.TurretDeactive(); // in case the turret overlay was active when the player got destroyed
         secondaryController.DeactivateMouse();
+        secondaryController.countScore = false; // stop counting matches after player death
+
         CursorManager.instance.SetDefaultCursor();  // in case the turret cursor was active when the player got destroyed
 
         SoundManager.instance.StopBackgroundMusic();
+
+        StartCoroutine(DatabaseManager.instance.UploadScore(score));
 
         Invoke("Restart", restartWait);
     }

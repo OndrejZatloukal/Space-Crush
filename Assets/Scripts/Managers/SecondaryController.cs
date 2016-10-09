@@ -40,7 +40,8 @@ public class SecondaryController : MonoBehaviour
     private GameController gameController;
     private PlayerController player;
 
-    private bool initializing = true;
+    [HideInInspector]
+    public bool countScore = false;
 
     private bool mouseDeactive = false;
     private bool mouseActive = false;
@@ -232,48 +233,9 @@ public class SecondaryController : MonoBehaviour
             run = checkMatch();
         } // end while
 
-        initializing = false;
+        countScore = true;
         mouseActive = true;
     } // end co-routine InitSpawnPowerups
-
-    //// Powerup Spawner
-    //IEnumerator spawnPowerups()
-    //{
-    //    for (int i = 0; i < gridX; i++)
-    //    {
-    //        bool spawnNew = false;
-    //        for (int ii = 0; ii < gridY; ii++)
-    //        {
-    //            if (!spawnNew && grid[i][ii] == null)
-    //            {
-    //                spawnNew = true;
-    //                for (int iii = ii + 1; iii < gridY; iii++)
-    //                {
-    //                    if (grid[i][iii] != null)
-    //                    {
-    //                        grid[i][ii] = grid[i][iii];
-    //                        grid[i][ii].GetComponent<MatchObjectController>().yPos = ii;
-    //                        grid[i][iii] = null;
-    //                        spawnNew = false;
-    //                        break;
-    //                    }
-    //                }
-    //            }
-
-    //            if (spawnNew)
-    //            {
-    //                GameObject powerup = powerups[Random.Range(0, powerups.Length)];
-    //                Vector3 spawnPosition = new Vector3(i, gridY, zOffset);
-    //                Quaternion spawnRotation = Quaternion.identity;
-    //                GameObject spawned = Instantiate(powerup, spawnPosition, spawnRotation) as GameObject;
-    //                spawned.GetComponent<MatchObjectController>().xPos = i;
-    //                spawned.GetComponent<MatchObjectController>().yPos = ii;
-    //                grid[i][ii] = spawned;
-    //                yield return new WaitForSeconds(0.025f);
-    //            }
-    //        }
-    //    }
-    //} // end co-routine spawnPowerups
 
     // Powerup Spawner
     void spawnPowerupsNoRoutine()
@@ -445,7 +407,7 @@ public class SecondaryController : MonoBehaviour
 
     void addScore(string tag, int count)
     {
-        if (!(initializing))
+        if (countScore)
         {
             if (tag == "PowerupShield")
             {
