@@ -5,6 +5,15 @@ public class DatabaseManager : MonoBehaviour {
 
     public static DatabaseManager instance = null;
 
+    private string privateKey = "NotTheFinalHashKey!";
+    private string addScoreURL = "http://www.sugoientertainment.ca/development/php/AddScore.php?";
+    private string topScoresURL = "http://www.sugoientertainment.ca/development/php/TopScores.php";
+    private string name;
+
+    public string version;
+
+    private string[] randomName = {"Alfred", "Barry", "Charlie", "Dave", "Eric", "Fred", "Garry", "Harrold"};
+
     void Awake()
     {
         if (instance == null)
@@ -18,13 +27,6 @@ public class DatabaseManager : MonoBehaviour {
 
         DontDestroyOnLoad(gameObject);
     }
-
-    private string privateKey = "NotTheFinalHashKey!";
-    private string addScoreURL = "http://www.sugoientertainment.ca/development/php/AddScore.php?";
-    private string name;
-    private string version = "Test.16.10.08";
-
-    private string[] randomName = {"Alfred", "Barry", "Charlie", "Dave", "Eric", "Fred", "Garry", "Harrold"};
 
     void Start()
     {
@@ -41,10 +43,44 @@ public class DatabaseManager : MonoBehaviour {
         if(postScore.error == null)
         {
             Debug.Log("Uploading score succesful.");
+            StartCoroutine(DisplayTopScores());
         }
         else
         {
-            Debug.Log("Error in uploading score.");
+            Debug.Log("Error in uploading score: " + postScore.error);
+        }
+    }
+
+    public IEnumerator DisplayTopScores()
+    {
+        WWW getScores = new WWW(topScoresURL);
+        yield return getScores;
+
+        if (getScores.error == null)
+        {
+            Debug.Log("Downloading scores succesful.");
+            string[] textArray = getScores.text.Split(new string[] { "\n", "\t" }, System.StringSplitOptions.RemoveEmptyEntries);
+
+            // Find the new Game Controller since it will be destroyed after each reset
+            GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+            GameController gameController = null;
+            if (gameControllerObject != null)
+            {
+                gameController = gameControllerObject.GetComponent<GameController>();
+            }
+
+            if (gameController == null)
+            {
+                Debug.Log("Cannot find 'GameController' Script");
+            }
+            else
+            {
+                gameController.passTopScores(textArray);
+            }
+        }
+        else
+        {
+            Debug.Log("Error in downloading scores.");
         }
     }
 

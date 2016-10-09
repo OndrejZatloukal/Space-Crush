@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour
     public GameObject levelManager; // mainly here for testing main scene
     public GameObject soundManager; // mainly here for testing main scene
     public GameObject cursorManager; // mainly here for testing main scene
+    public GameObject databaseManager; // mainly here for testing main scene
     public GameObject vfx; // for debugging
 
     public GameObject[] hazards;
@@ -27,6 +28,8 @@ public class GameController : MonoBehaviour
     public GameObject gameOverOverlay;
     public Text finalScoreText;
     public Text finalWaveText;
+    public Text topScoresNamesText;
+    public Text topScoresScoresText;
     public int targetSpecial;
     public float targetSpecialIncrement;
     public bool debug;
@@ -61,6 +64,11 @@ public class GameController : MonoBehaviour
         {
             Instantiate(cursorManager);
         }
+
+        if (DatabaseManager.instance == null)
+        {
+            Instantiate(databaseManager);
+        }
     }
 
     void Start()
@@ -90,6 +98,8 @@ public class GameController : MonoBehaviour
         gameOverOverlay.SetActive(false);
         finalScoreText.text = "";
         finalWaveText.text = "";
+        topScoresNamesText.text = "Name:";
+        topScoresScoresText.text = "Score:";
         score = 0;
         wave = 0;
         scoreSpecial = 0;
@@ -279,6 +289,16 @@ public class GameController : MonoBehaviour
             Time.timeScale = 1.0f;
             paused = false;
             secondaryController.ReactivateMouse();
+        }
+    }
+
+    public void passTopScores(string[] textArray)
+    {
+        for (int i = 0; i < textArray.Length;)
+        {
+            //Debug.Log("Name: " + textArray[i++] + " Score: " + textArray[i++]);
+            topScoresNamesText.text += "\n" + textArray[i++];
+            topScoresScoresText.text += "\n" + textArray[i++];
         }
     }
 }
