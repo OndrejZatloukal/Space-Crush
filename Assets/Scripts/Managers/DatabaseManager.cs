@@ -8,8 +8,11 @@ public class DatabaseManager : MonoBehaviour {
     private string privateKey = "NotTheFinalHashKey!";
     private string addScoreURL = "http://www.sugoientertainment.ca/development/php/AddScore.php?";
     private string topScoresURL = "http://www.sugoientertainment.ca/development/php/TopScores.php";
+    private string grabRankURL = "http://www.sugoientertainment.ca/development/php/GrabRank.php?";
+    private string surroundingScoresURL = "http://www.sugoientertainment.ca/development/php/SurroundingScores.php?";
     private string username;
     private uint sessionID;
+    private uint currentRank;
 
     public string version;
 
@@ -33,6 +36,7 @@ public class DatabaseManager : MonoBehaviour {
     {
         username = randomName[Random.Range(0, randomName.Length)];
         sessionID = 0;
+        currentRank = 0;
     }
 
     public IEnumerator UploadScore(int score)
@@ -46,7 +50,6 @@ public class DatabaseManager : MonoBehaviour {
         if(postScore.error == null)
         {
             Debug.Log("Uploading score succesful.");
-            Debug.Log(postScore.text);
 
             if (postScore.text.Substring(0,(postScore.text.Length >= 5 ? 5 : postScore.text.Length)) == "Error")
             {
@@ -80,29 +83,106 @@ public class DatabaseManager : MonoBehaviour {
 
         if (getScores.error == null)
         {
-            Debug.Log("Downloading scores succesful.");
-            string[] textArray = getScores.text.Split(new string[] { "\n", "\t" }, System.StringSplitOptions.RemoveEmptyEntries);
-
-            // Find the new Game Controller since it will be destroyed after each reset
-            GameObject gameControllerObject = GameObject.FindWithTag("GameController");
-            GameController gameController = null;
-            if (gameControllerObject != null)
+            if (getScores.text.Substring(0, (getScores.text.Length >= 6 ? 6 : getScores.text.Length)) == "Error:")
             {
-                gameController = gameControllerObject.GetComponent<GameController>();
-            }
-
-            if (gameController == null)
-            {
-                Debug.Log("Cannot find 'GameController' Script");
+                Debug.Log(getScores.text);
             }
             else
             {
-                gameController.passTopScores(textArray);
+                Debug.Log("Downloading scores succesful.");
+                string[] textArray = getScores.text.Split(new string[] { "\n", "\t" }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                // Find the new Game Controller since it will be destroyed after each reset
+                GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+                GameController gameController = null;
+                if (gameControllerObject != null)
+                {
+                    gameController = gameControllerObject.GetComponent<GameController>();
+                }
+
+                if (gameController == null)
+                {
+                    Debug.Log("Cannot find 'GameController' Script");
+                }
+                else
+                {
+                    gameController.passTopScores(textArray);
+                }
+
+                StartCoroutine(CountRank());
             }
         }
         else
         {
             Debug.Log("Error in downloading scores.");
+        }
+    }
+
+    public IEnumerator CountRank()
+    {
+        WWW getRank = new WWW(grabRankURL + "sessionID=" + sessionID);
+        yield return getRank;
+
+        if (getRank.error == null)
+        {
+            if (getRank.text.Substring(0, (getRank.text.Length >= 5 ? 5 : getRank.text.Length)) == "Error")
+            {
+                Debug.Log(getRank.text);
+            }
+            else
+            {
+                currentRank = System.Convert.ToUInt32(getRank.text);
+                Debug.Log("Rank: " + currentRank);
+
+                StartCoroutine(DisplaySurroundingScores());
+            }
+        }
+        else
+        {
+            Debug.Log("Error in downloading rank.");
+        }
+    }
+
+    public IEnumerator DisplaySurroundingScores()
+    {
+        if (currentRank > 2) // otherwise display in Top 10
+        {
+            WWW getScores = new WWW(surroundingScoresURL + "sessionID=" + sessionID);
+            yield return getScores;
+
+            if (getScores.error == null)
+            {
+                if (getScores.text.Substring(0, (getScores.text.Length >= 6 ? 6 : getScores.text.Length)) == "Error:")
+                {
+                    Debug.Log(getScores.text);
+                }
+                else
+                {
+                    Debug.Log("Downloading scores succesful.");
+                    string[] textArray = getScores.text.Split(new string[] { "\n", "\t" }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                    // Find the new Game Controller since it will be destroyed after each reset
+                    GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+                    GameController gameController = null;
+                    if (gameControllerObject != null)
+                    {
+                        gameController = gameControllerObject.GetComponent<GameController>();
+                    }
+
+                    if (gameController == null)
+                    {
+                        Debug.Log("Cannot find 'GameController' Script");
+                    }
+                    else
+                    {
+                        gameController.passSurroundingScores(currentRank, textArray);
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("Error in downloading scores.");
+            }
         }
     }
 

@@ -30,6 +30,10 @@ public class GameController : MonoBehaviour
     public Text finalWaveText;
     public Text topScoresNamesText;
     public Text topScoresScoresText;
+    public Text[] surroundingScoresRanksText;
+    public Text[] surroundingScoresNamesText;
+    public Text[] surroundingScoresScoresText;
+
     public int targetSpecial;
     public float targetSpecialIncrement;
     public bool debug;
@@ -90,16 +94,26 @@ public class GameController : MonoBehaviour
         // set default cursor for browsers that don't pick up Unity's custom cursor
         CursorManager.instance.SetDefaultCursor();
 
-        // initialize variables and UI
+        // initialize game variables
         hazardSpeed = 1;
         paused = false;
         gameOver = false;
         restart = false;
+
+        // initialize UI variables
         gameOverOverlay.SetActive(false);
         finalScoreText.text = "";
         finalWaveText.text = "";
         topScoresNamesText.text = "Name:";
         topScoresScoresText.text = "Score:";
+        for (int i = 0; i < surroundingScoresRanksText.Length; ++i)
+        {
+            surroundingScoresRanksText[i].text = "";
+            surroundingScoresNamesText[i].text = "";
+            surroundingScoresScoresText[i].text = "";
+        } // end for
+
+        // initialize score values
         score = 0;
         wave = 0;
         scoreSpecial = 0;
@@ -302,6 +316,16 @@ public class GameController : MonoBehaviour
             //Debug.Log("Name: " + textArray[i++] + " Score: " + textArray[i++]);
             topScoresNamesText.text += "\n" + textArray[i++];
             topScoresScoresText.text += "\n" + textArray[i++];
-        }
+        } // end for
+    }
+
+    public void passSurroundingScores(uint rank, string[] textArray)
+    {
+        for (int i = 0, j = 0; j < textArray.Length; ++i)
+        {
+            surroundingScoresRanksText[i].text = System.Convert.ToString(rank - 2 + i);
+            surroundingScoresNamesText[i].text = textArray[j++];
+            surroundingScoresScoresText[i].text = textArray[j++];
+        } // end for
     }
 }
