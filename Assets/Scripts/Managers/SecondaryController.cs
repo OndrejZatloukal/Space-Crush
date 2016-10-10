@@ -554,5 +554,5 @@ public class SecondaryController : MonoBehaviour
             // display score in progress bar
             speedBar.rectTransform.anchorMax = new Vector2((float)scoreGreen / (float)targetGreen, 1);
         }
-    }
+    } // end function ResetScore
 }

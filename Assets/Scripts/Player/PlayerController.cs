@@ -60,6 +60,11 @@ public class PlayerController : MonoBehaviour
     private List<int> shotSpawnsActive = new List<int>();
     private bool speedUpPower;
 
+    // powerdown variables
+    private bool fireRateBroken;
+    private bool doubleFireBroken;
+    private bool speedBroken;
+
     // variables for turret
     private float turretDown;
     private float turretFireRate;
@@ -108,6 +113,10 @@ public class PlayerController : MonoBehaviour
         turretShotSpawnActive = 0;
         turretCursor = false;
 
+        // set up powerdown data
+        fireRateBroken = false;
+        doubleFireBroken = false;
+
         // set shield state
         if (startShield)
         {
@@ -125,14 +134,21 @@ public class PlayerController : MonoBehaviour
         {
             nextFire = Time.time + fireRate;
 
-            // shoot from all active guns
-            foreach (int i in shotSpawnsActive)
+            if (doubleFireBroken == true && Random.Range(0, 3) == 0)
             {
-                (Instantiate(shotFlash, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.eulerAngles.z)) as GameObject).transform.parent = transform;
-                Instantiate(shot, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.eulerAngles.z));
-            };
+               Debug.Log("Double fire broken!");
+            }
+            else
+            {
+                // shoot from all active guns
+                foreach (int i in shotSpawnsActive)
+                {
+                    (Instantiate(shotFlash, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.eulerAngles.z)) as GameObject).transform.parent = transform;
+                    Instantiate(shot, shotSpawns[i].position, Quaternion.Euler(0.0f, 0.0f, shotSpawns[i].rotation.eulerAngles.z));
+                };
 
-            SoundManager.instance.PlayPlayerShot();
+                SoundManager.instance.PlayPlayerShot();
+            }
         }
 
         // Debug commands
@@ -177,19 +193,19 @@ public class PlayerController : MonoBehaviour
             // Deactivate Rapid Fire
             if (Input.GetKeyDown(KeyCode.K))
             {
-                StopPowerup(2);
+                StartPowerdown(2);
             }
 
             // Deactivate Double Fire
             if (Input.GetKeyDown(KeyCode.J))
             {
-                StopPowerup(3);
+                StartPowerdown(3);
             }
 
             // Deactivate Speed
             if (Input.GetKeyDown(KeyCode.H))
             {
-                StopPowerup(4);
+                StartPowerdown(4);
             }
 
             // Deactivate Turret
@@ -334,6 +350,18 @@ public class PlayerController : MonoBehaviour
     {
         secondaryController.ResetScore(index);
         StopPowerup(index);
+        if (index == 2)
+        {
+            FireRatePowerdown();
+        }
+        if (index == 3)
+        {
+            DoubleFirePowerdown();
+        }
+        if (index == 4)
+        {
+            SpeedPowerdown();
+        }
     } // end StartPowerdown
 
     private void Shield()
@@ -455,4 +483,35 @@ public class PlayerController : MonoBehaviour
             }
         }
     } // end IEnumerator Turret
+
+    // powerdown functions
+
+    private void FireRatePowerdown()
+    {
+        if (fireRateBroken == false)
+        {
+            fireRateBroken = true;
+            fireRate = fireRate * 2;
+            Debug.Log("FireRatePowerdown is active");
+        }
+    } // end function FireRatePowerdown
+
+    private void DoubleFirePowerdown()
+    {
+        if (doubleFireBroken == false)
+        {
+            doubleFireBroken = true;
+            Debug.Log("DoubleFirePowerdown is active");
+        }
+    } // end function DoubleFirePowerdown
+
+    private void SpeedPowerdown()
+    {
+        if (speedBroken == false)
+        {
+            speedBroken = true;
+            speed = speed / 1.5f;
+            Debug.Log("SpeedPowerdown is active");
+        }
+    } // end function Speedpowerdown
 } // end class PlayerController
