@@ -259,7 +259,10 @@ public class GameController : MonoBehaviour
 
         SoundManager.instance.StopBackgroundMusic();
 
-        StartCoroutine(DatabaseManager.instance.UploadScore(score));
+        if (!debug)
+        {
+            StartCoroutine(DatabaseManager.instance.UploadScore(score));
+        }
 
         Invoke("Restart", restartWait);
     }

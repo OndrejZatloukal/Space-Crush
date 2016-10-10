@@ -8,7 +8,8 @@ public class DatabaseManager : MonoBehaviour {
     private string privateKey = "NotTheFinalHashKey!";
     private string addScoreURL = "http://www.sugoientertainment.ca/development/php/AddScore.php?";
     private string topScoresURL = "http://www.sugoientertainment.ca/development/php/TopScores.php";
-    private string name;
+    private string username;
+    private uint sessionID;
 
     public string version;
 
@@ -30,20 +31,41 @@ public class DatabaseManager : MonoBehaviour {
 
     void Start()
     {
-        name = randomName[Random.Range(0, randomName.Length - 1)];
+        username = randomName[Random.Range(0, randomName.Length)];
+        sessionID = 0;
     }
 
     public IEnumerator UploadScore(int score)
     {
-        string hash = Md5Sum(name + score + version + privateKey);
-        WWW postScore = new WWW(addScoreURL + "name=" + WWW.EscapeURL(name) + "&score=" + score + "&version=" + version + "&hash=" + hash);
-        Debug.Log(addScoreURL + "name=" + WWW.EscapeURL(name) + "&score=" + score + "&version=" + version + "&hash=" + hash);
+        string hash = Md5Sum(username + score + version + privateKey);
+        WWW postScore = new WWW(addScoreURL + "sessionID=" + sessionID + "&name=" + WWW.EscapeURL(username) + "&score=" + score + "&version=" + version + "&hash=" + hash);
+        //Debug.Log(addScoreURL + "name=" + WWW.EscapeURL(name) + "&score=" + score + "&version=" + version + "&hash=" + hash);
+        Debug.Log("Posted Session ID: " + sessionID + " Name: " + username + " Score: " + score + " Version " + version);
         yield return postScore;
 
         if(postScore.error == null)
         {
             Debug.Log("Uploading score succesful.");
-            StartCoroutine(DisplayTopScores());
+            Debug.Log(postScore.text);
+
+            if (postScore.text.Substring(0,(postScore.text.Length >= 5 ? 5 : postScore.text.Length)) == "Error")
+            {
+                Debug.Log(postScore.text);
+            }
+            else
+            {
+                if (sessionID == 0)
+                {
+                    sessionID = System.Convert.ToUInt32(postScore.text);
+                }
+                else
+                {
+                    Debug.Log(postScore.text);
+                }
+                Debug.Log("Session ID: " + sessionID);
+
+                StartCoroutine(DisplayTopScores());
+            }
         }
         else
         {
