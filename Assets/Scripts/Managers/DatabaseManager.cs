@@ -118,7 +118,7 @@ public class DatabaseManager : MonoBehaviour {
                 }
                 else
                 {
-                    gameController.passTopScores(textArray);
+                    gameController.passTop5Scores(textArray);
                 }
 
                 StartCoroutine(CountRank());

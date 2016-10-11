@@ -37,8 +37,9 @@ public class GameController : MonoBehaviour
     public GameObject gameOverOverlay;
     public Text finalScoreText;
     public Text finalWaveText;
-    public Text topScoresNamesText;
-    public Text topScoresScoresText;
+    public Text[] topScoresRanksText;
+    public Text[] topScoresNamesText;
+    public Text[] topScoresScoresText;
     public Text[] surroundingScoresRanksText;
     public Text[] surroundingScoresNamesText;
     public Text[] surroundingScoresScoresText;
@@ -112,10 +113,12 @@ public class GameController : MonoBehaviour
         }
         finalScoreText.text = "";
         finalWaveText.text = "";
-        topScoresNamesText.text = "Name:";
-        topScoresScoresText.text = "Score:";
-        for (int i = 0; i < surroundingScoresRanksText.Length; ++i)
+        for (int i = 0; i < topScoresRanksText.Length; ++i)
         {
+            topScoresRanksText[i].text = "";
+            topScoresNamesText[i].text = "";
+            topScoresScoresText[i].text = "";
+
             surroundingScoresRanksText[i].text = "";
             surroundingScoresNamesText[i].text = "";
             surroundingScoresScoresText[i].text = "";
@@ -317,19 +320,19 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void passTopScores(string[] textArray)
+    public void passTop5Scores(string[] textArray)
     {
-        for (int i = 0; i < textArray.Length;)
+        for (int i = 0, j = 0; i < topScoresRanksText.Length && j < textArray.Length; ++i)
         {
-            //Debug.Log("Name: " + textArray[i++] + " Score: " + textArray[i++]);
-            topScoresNamesText.text += "\n" + textArray[i++];
-            topScoresScoresText.text += "\n" + textArray[i++];
+            topScoresRanksText[i].text = System.Convert.ToString(i + 1);
+            topScoresNamesText[i].text = textArray[j++];
+            topScoresScoresText[i].text = textArray[j++];
         } // end for
     }
 
     public void passSurroundingScores(uint rank, string[] textArray)
     {
-        for (int i = 0, j = 0; j < textArray.Length; ++i)
+        for (int i = 0, j = 0; i <surroundingScoresScoresText.Length && j < textArray.Length; ++i)
         {
             surroundingScoresRanksText[i].text = System.Convert.ToString(rank - 2 + i);
             surroundingScoresNamesText[i].text = textArray[j++];
