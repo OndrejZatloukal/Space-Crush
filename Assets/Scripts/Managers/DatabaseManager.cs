@@ -10,13 +10,17 @@ public class DatabaseManager : MonoBehaviour {
     private string topScoresURL = "http://www.sugoientertainment.ca/development/php/TopScores.php";
     private string grabRankURL = "http://www.sugoientertainment.ca/development/php/GrabRank.php?";
     private string surroundingScoresURL = "http://www.sugoientertainment.ca/development/php/SurroundingScores.php?";
-    private string username;
     private uint sessionID;
     private uint currentRank;
 
+    [HideInInspector]
+    public string player1Name;
+    [HideInInspector]
+    public string player2Name;
+
     public string version;
 
-    private string[] randomName = {"Alfred", "Barry", "Charlie", "Dave", "Eric", "Fred", "Garry", "Harrold"};
+    //private string[] randomName = {"Alfred", "Barry", "Charlie", "Dave", "Eric", "Fred", "Garry", "Harrold"};
 
     void Awake()
     {
@@ -34,17 +38,19 @@ public class DatabaseManager : MonoBehaviour {
 
     void Start()
     {
-        username = randomName[Random.Range(0, randomName.Length)];
+        //player1Name = randomName[Random.Range(0, randomName.Length)];
+        player1Name = "";
+        player2Name = "";
         sessionID = 0;
         currentRank = 0;
     }
 
     public IEnumerator UploadScore(int score)
     {
-        string hash = Md5Sum(username + score + version + privateKey);
-        WWW postScore = new WWW(addScoreURL + "sessionID=" + sessionID + "&name=" + WWW.EscapeURL(username) + "&score=" + score + "&version=" + version + "&hash=" + hash);
+        string hash = Md5Sum(player1Name + score + version + privateKey);
+        WWW postScore = new WWW(addScoreURL + "sessionID=" + sessionID + "&name=" + WWW.EscapeURL(player1Name) + "&score=" + score + "&version=" + version + "&hash=" + hash);
         //Debug.Log(addScoreURL + "name=" + WWW.EscapeURL(name) + "&score=" + score + "&version=" + version + "&hash=" + hash);
-        Debug.Log("Posted Session ID: " + sessionID + " Name: " + username + " Score: " + score + " Version " + version);
+        Debug.Log("Posted Session ID: " + sessionID + " Name: " + player1Name + " Score: " + score + " Version " + version);
         yield return postScore;
 
         if(postScore.error == null)
