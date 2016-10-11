@@ -47,6 +47,12 @@ public class DatabaseManager : MonoBehaviour {
 
     public IEnumerator UploadScore(int score)
     {
+        if (player1Name == "" || player2Name == "")
+        {
+            Debug.Log("Error: Missing player names,");
+            yield break;
+        }
+
         string hash = Md5Sum(player1Name + score + version + privateKey);
         WWW postScore = new WWW(addScoreURL + "sessionID=" + sessionID + "&name=" + WWW.EscapeURL(player1Name) + "&score=" + score + "&version=" + version + "&hash=" + hash);
         //Debug.Log(addScoreURL + "name=" + WWW.EscapeURL(name) + "&score=" + score + "&version=" + version + "&hash=" + hash);

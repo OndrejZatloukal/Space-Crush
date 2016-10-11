@@ -21,6 +21,15 @@ public class GameController : MonoBehaviour
     public float startWait;
     public float waveWait;
     public float restartWait;
+    public int targetSpecial;
+    public float targetSpecialIncrement;
+
+    public bool debug;
+    [HideInInspector]
+    public bool paused;
+
+    public Text player1NameText;
+    public Text player2NameText;
 
     public Text scoreText;
     public Text waveText;
@@ -33,12 +42,6 @@ public class GameController : MonoBehaviour
     public Text[] surroundingScoresRanksText;
     public Text[] surroundingScoresNamesText;
     public Text[] surroundingScoresScoresText;
-
-    public int targetSpecial;
-    public float targetSpecialIncrement;
-    public bool debug;
-    [HideInInspector]
-    public bool paused;
 
     private SecondaryController secondaryController;
     private PowerupUI powerupUI;
@@ -102,6 +105,11 @@ public class GameController : MonoBehaviour
 
         // initialize UI variables
         gameOverOverlay.SetActive(false);
+        if (DatabaseManager.instance.player1Name != "" && DatabaseManager.instance.player2Name != "")
+        {
+            player1NameText.text = DatabaseManager.instance.player1Name;
+            player2NameText.text = DatabaseManager.instance.player2Name;
+        }
         finalScoreText.text = "";
         finalWaveText.text = "";
         topScoresNamesText.text = "Name:";
