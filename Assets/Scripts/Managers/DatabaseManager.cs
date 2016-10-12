@@ -6,11 +6,16 @@ public class DatabaseManager : MonoBehaviour {
     public static DatabaseManager instance = null;
 
     private string privateKey = "NotTheFinalHashKey!";
-    private string addScoreURL = "http://www.sugoientertainment.ca/development/php/AddScore.php?";
+
+    // Php URL's
+    private string addScoreURL = "http://www.sugoientertainment.ca/spaceCrush/php/AddScore.php?";
     private string topScoresURL = "http://www.sugoientertainment.ca/development/php/TopScores.php";
     private string grabRankURL = "http://www.sugoientertainment.ca/development/php/GrabRank.php?";
     private string surroundingScoresURL = "http://www.sugoientertainment.ca/development/php/SurroundingScores.php?";
-    private uint sessionID;
+
+
+    [HideInInspector]
+    public uint sessionID;
     private uint currentRank;
 
     [HideInInspector]
@@ -19,8 +24,6 @@ public class DatabaseManager : MonoBehaviour {
     public string player2Name;
 
     public string version;
-
-    //private string[] randomName = {"Alfred", "Barry", "Charlie", "Dave", "Eric", "Fred", "Garry", "Harrold"};
 
     void Awake()
     {
@@ -38,14 +41,13 @@ public class DatabaseManager : MonoBehaviour {
 
     void Start()
     {
-        //player1Name = randomName[Random.Range(0, randomName.Length)];
         player1Name = "";
         player2Name = "";
         sessionID = 0;
         currentRank = 0;
     }
 
-    public IEnumerator UploadScore(int score)
+    public IEnumerator UploadScore(int score, int wave)
     {
         if (player1Name == "" || player2Name == "")
         {
@@ -53,10 +55,10 @@ public class DatabaseManager : MonoBehaviour {
             yield break;
         }
 
-        string hash = Md5Sum(player1Name + score + version + privateKey);
-        WWW postScore = new WWW(addScoreURL + "sessionID=" + sessionID + "&name=" + WWW.EscapeURL(player1Name) + "&score=" + score + "&version=" + version + "&hash=" + hash);
-        //Debug.Log(addScoreURL + "name=" + WWW.EscapeURL(name) + "&score=" + score + "&version=" + version + "&hash=" + hash);
-        Debug.Log("Posted Session ID: " + sessionID + " Name: " + player1Name + " Score: " + score + " Version " + version);
+        string hash = Md5Sum(sessionID + player1Name + player2Name + score + wave + version + privateKey);
+        WWW postScore = new WWW(addScoreURL + "sessionID=" + sessionID + "&nameP1=" + WWW.EscapeURL(player1Name) + "&nameP2=" + WWW.EscapeURL(player2Name) + "&score=" + score + "&wave=" + wave + "&version=" + version + "&hash=" + hash);
+        //Debug.Log(addScoreURL + "sessionID=" + sessionID + "&nameP1=" + WWW.EscapeURL(player1Name) + "&nameP2=" + WWW.EscapeURL(player2Name) + "&score=" + score + "&wave=" + wave + "&version=" + version + "&hash=" + hash);
+        Debug.Log("Posted Session ID: " + sessionID + " NameP1: " + player1Name + "NameP2: " + player2Name + " Score: " + score + " Wave: " + wave + " Version " + version);
         yield return postScore;
 
         if(postScore.error == null)
@@ -69,17 +71,17 @@ public class DatabaseManager : MonoBehaviour {
             }
             else
             {
-                if (sessionID == 0)
+                if (sessionID == 0 && postScore.text != "")
                 {
                     sessionID = System.Convert.ToUInt32(postScore.text);
                 }
                 else
                 {
-                    Debug.Log(postScore.text);
+                    Debug.Log("Post score returned: " + postScore.text);
                 }
                 Debug.Log("Session ID: " + sessionID);
 
-                StartCoroutine(DisplayTopScores());
+                //StartCoroutine(DisplayTopScores());
             }
         }
         else
@@ -141,12 +143,16 @@ public class DatabaseManager : MonoBehaviour {
             {
                 Debug.Log(getRank.text);
             }
-            else
+            else if (getRank.text != "")
             {
                 currentRank = System.Convert.ToUInt32(getRank.text);
                 Debug.Log("Rank: " + currentRank);
 
                 StartCoroutine(DisplaySurroundingScores());
+            }
+            else
+            {
+                Debug.Log("Error in dowloading rank, possible invalid session ID.");
             }
         }
         else

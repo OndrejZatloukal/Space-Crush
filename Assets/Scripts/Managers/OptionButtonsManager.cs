@@ -13,9 +13,13 @@ public class OptionButtonsManager : MonoBehaviour
     public Sprite volumeOnOff;
     public GameObject customCursor;
     public GameObject cursorMode;
+    public GameObject debugOverlay;
+    public InputField newSessionID;
 
     void Start()
     {
+        debugOverlay.SetActive(false);
+
         volumeSlider.GetComponent<Slider>().value = SoundManager.instance.masterVolume;
         SetVolumeIcons();
 
@@ -35,6 +39,18 @@ public class OptionButtonsManager : MonoBehaviour
         else
         {
             cursorMode.GetComponent<Toggle>().isOn = false;
+        }
+    }
+
+    void Update()
+    {
+        // Activate debug mode
+        if (Input.GetKeyDown(KeyCode.KeypadMultiply))
+        {
+            Debug.Log(DatabaseManager.instance.sessionID);
+            debugOverlay.SetActive(true);
+
+            newSessionID.ActivateInputField();
         }
     }
 
@@ -80,5 +96,15 @@ public class OptionButtonsManager : MonoBehaviour
         {
             CursorManager.instance.SetCursoModeAuto();
         }
+    }
+
+    public void SetSessionID()
+    {
+        if (newSessionID.text != "")
+        {
+            DatabaseManager.instance.sessionID = System.Convert.ToUInt32(newSessionID.text);
+        }
+
+        Debug.Log(DatabaseManager.instance.sessionID);
     }
 }

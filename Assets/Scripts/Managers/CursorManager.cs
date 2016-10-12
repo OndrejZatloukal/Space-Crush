@@ -54,7 +54,7 @@ public class CursorManager : MonoBehaviour
 
     public void EnableCustomCursors()
     {
-        DebugLog();
+        //DebugLog();
 
         customCursors = true;
         RefreshCursor();
@@ -62,7 +62,7 @@ public class CursorManager : MonoBehaviour
 
     public void DisableCustomCursors()
     {
-        DebugLog();
+        //DebugLog();
 
         customCursors = false;
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
@@ -81,10 +81,6 @@ public class CursorManager : MonoBehaviour
         cursorMode = CursorMode.ForceSoftware;
 
         Invoke("RefreshCursor", 0.05f);
-
-        //EnableCustomCursors();
-
-        //RefreshCursor();
     }
 
     public void RefreshCursor()

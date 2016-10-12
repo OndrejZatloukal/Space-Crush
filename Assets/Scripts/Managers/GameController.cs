@@ -286,7 +286,7 @@ public class GameController : MonoBehaviour
 
         if (!debug)
         {
-            StartCoroutine(DatabaseManager.instance.UploadScore(score));
+            StartCoroutine(DatabaseManager.instance.UploadScore(score, wave));
         }
 
         Invoke("Restart", restartWait);
