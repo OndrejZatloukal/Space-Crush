@@ -325,8 +325,48 @@ public class GameController : MonoBehaviour
         for (int i = 0, j = 0; i < topScoresRanksText.Length && j < textArray.Length; ++i)
         {
             topScoresRanksText[i].text = System.Convert.ToString(i + 1);
-            topScoresNamesText[i].text = textArray[j++];
+            topScoresNamesText[i].text = textArray[j++] + " & " + textArray[j++];
             topScoresScoresText[i].text = textArray[j++];
+        } // end for
+    }
+
+    public void passTop10Scores(uint rank, string[] textArray)
+    {
+        if (rank != 8)
+        {
+            // display player score in yellow
+            if (rank <= 5)
+            {
+                topScoresRanksText[rank - 1].color = surroundingScoresRanksText[2].color;
+                topScoresNamesText[rank - 1].color = surroundingScoresNamesText[2].color;
+                topScoresScoresText[rank - 1].color = surroundingScoresScoresText[2].color;
+            }
+            else
+            {
+                surroundingScoresRanksText[rank - 6].color = surroundingScoresRanksText[2].color;
+                surroundingScoresNamesText[rank - 6].color = surroundingScoresNamesText[2].color;
+                surroundingScoresScoresText[rank - 6].color = surroundingScoresScoresText[2].color;
+            }
+
+            // reset text color to white
+            surroundingScoresRanksText[2].color = Color.white;
+            surroundingScoresNamesText[2].color = Color.white;
+            surroundingScoresScoresText[2].color = Color.white;
+        }
+
+        int j = 0;
+        for (int i = 0; i < topScoresRanksText.Length && j < textArray.Length; ++i)
+        {
+            topScoresRanksText[i].text = System.Convert.ToString(i + 1);
+            topScoresNamesText[i].text = textArray[j++] + " & " + textArray[j++];
+            topScoresScoresText[i].text = textArray[j++];
+        } // end for
+
+        for (int i = 0; i < surroundingScoresScoresText.Length && j < textArray.Length; ++i)
+        {
+            surroundingScoresRanksText[i].text = System.Convert.ToString(i + 6);
+            surroundingScoresNamesText[i].text = textArray[j++] + " & " + textArray[j++];
+            surroundingScoresScoresText[i].text = textArray[j++];
         } // end for
     }
 
@@ -335,7 +375,7 @@ public class GameController : MonoBehaviour
         for (int i = 0, j = 0; i <surroundingScoresScoresText.Length && j < textArray.Length; ++i)
         {
             surroundingScoresRanksText[i].text = System.Convert.ToString(rank - 2 + i);
-            surroundingScoresNamesText[i].text = textArray[j++];
+            surroundingScoresNamesText[i].text = textArray[j++] + " & " + textArray[j++];
             surroundingScoresScoresText[i].text = textArray[j++];
         } // end for
     }

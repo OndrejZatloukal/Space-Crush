@@ -9,9 +9,9 @@ public class DatabaseManager : MonoBehaviour {
 
     // Php URL's
     private string addScoreURL = "http://www.sugoientertainment.ca/spaceCrush/php/AddScore.php?";
-    private string topScoresURL = "http://www.sugoientertainment.ca/development/php/TopScores.php";
-    private string grabRankURL = "http://www.sugoientertainment.ca/development/php/GrabRank.php?";
-    private string surroundingScoresURL = "http://www.sugoientertainment.ca/development/php/SurroundingScores.php?";
+    private string grabRankURL = "http://www.sugoientertainment.ca/spaceCrush/php/GrabRank.php?";
+    private string topScoresURL = "http://www.sugoientertainment.ca/spaceCrush/php/TopScores.php";
+    private string surroundingScoresURL = "http://www.sugoientertainment.ca/spaceCrush/php/SurroundingScores.php?";
 
 
     [HideInInspector]
@@ -51,14 +51,14 @@ public class DatabaseManager : MonoBehaviour {
     {
         if (player1Name == "" || player2Name == "")
         {
-            Debug.Log("Error: Missing player names,");
+            Debug.Log("Error: Missing player names.");
             yield break;
         }
 
         string hash = Md5Sum(sessionID + player1Name + player2Name + score + wave + version + privateKey);
         WWW postScore = new WWW(addScoreURL + "sessionID=" + sessionID + "&nameP1=" + WWW.EscapeURL(player1Name) + "&nameP2=" + WWW.EscapeURL(player2Name) + "&score=" + score + "&wave=" + wave + "&version=" + version + "&hash=" + hash);
         //Debug.Log(addScoreURL + "sessionID=" + sessionID + "&nameP1=" + WWW.EscapeURL(player1Name) + "&nameP2=" + WWW.EscapeURL(player2Name) + "&score=" + score + "&wave=" + wave + "&version=" + version + "&hash=" + hash);
-        Debug.Log("Posted Session ID: " + sessionID + " NameP1: " + player1Name + "NameP2: " + player2Name + " Score: " + score + " Wave: " + wave + " Version " + version);
+        Debug.Log("Posted Session ID: " + sessionID + " NameP1: " + player1Name + " NameP2: " + player2Name + " Score: " + score + " Wave: " + wave + " Version " + version);
         yield return postScore;
 
         if(postScore.error == null)
@@ -82,11 +82,42 @@ public class DatabaseManager : MonoBehaviour {
                 Debug.Log("Session ID: " + sessionID);
 
                 //StartCoroutine(DisplayTopScores());
+                StartCoroutine(CountRank());
             }
         }
         else
         {
             Debug.Log("Error in uploading score: " + postScore.error);
+        }
+    }
+
+    public IEnumerator CountRank()
+    {
+        WWW getRank = new WWW(grabRankURL + "sessionID=" + sessionID);
+        yield return getRank;
+
+        if (getRank.error == null)
+        {
+            if (getRank.text.Substring(0, (getRank.text.Length >= 5 ? 5 : getRank.text.Length)) == "Error")
+            {
+                Debug.Log(getRank.text);
+            }
+            else if (getRank.text != "")
+            {
+                currentRank = System.Convert.ToUInt32(getRank.text);
+                Debug.Log("Rank: " + currentRank);
+
+                //StartCoroutine(DisplaySurroundingScores());
+                StartCoroutine(DisplayTopScores());
+            }
+            else
+            {
+                Debug.Log("Error in dowloading rank, possible invalid session ID.");
+            }
+        }
+        else
+        {
+            Debug.Log("Error in downloading rank.");
         }
     }
 
@@ -118,46 +149,20 @@ public class DatabaseManager : MonoBehaviour {
                 {
                     Debug.Log("Cannot find 'GameController' Script");
                 }
+                else if (currentRank <=10)
+                {
+                    gameController.passTop10Scores(currentRank, textArray);
+                }
                 else
                 {
                     gameController.passTop5Scores(textArray);
+                    StartCoroutine(DisplaySurroundingScores());
                 }
-
-                StartCoroutine(CountRank());
             }
         }
         else
         {
             Debug.Log("Error in downloading scores.");
-        }
-    }
-
-    public IEnumerator CountRank()
-    {
-        WWW getRank = new WWW(grabRankURL + "sessionID=" + sessionID);
-        yield return getRank;
-
-        if (getRank.error == null)
-        {
-            if (getRank.text.Substring(0, (getRank.text.Length >= 5 ? 5 : getRank.text.Length)) == "Error")
-            {
-                Debug.Log(getRank.text);
-            }
-            else if (getRank.text != "")
-            {
-                currentRank = System.Convert.ToUInt32(getRank.text);
-                Debug.Log("Rank: " + currentRank);
-
-                StartCoroutine(DisplaySurroundingScores());
-            }
-            else
-            {
-                Debug.Log("Error in dowloading rank, possible invalid session ID.");
-            }
-        }
-        else
-        {
-            Debug.Log("Error in downloading rank.");
         }
     }
 
