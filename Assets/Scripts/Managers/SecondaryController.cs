@@ -407,7 +407,7 @@ public class SecondaryController : MonoBehaviour
 
     void addScore(string tag, int count)
     {
-        if (countScore)
+        if (countScore && tag != "PowerupBlock")
         {
             if (tag == "PowerupShield")
             {
