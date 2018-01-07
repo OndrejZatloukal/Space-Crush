@@ -3,11 +3,11 @@ using System.Collections;
 
 public class BlastController : MonoBehaviour
 {
-    public GameObject explosion;
-    public float smoothing;
+    [SerializeField] GameObject explosion;
 
-    [HideInInspector]
-    public float blastRadius;
+    [SerializeField] float smoothing;
+
+    [HideInInspector] public float blastRadius;
 
     void Start()
     {
