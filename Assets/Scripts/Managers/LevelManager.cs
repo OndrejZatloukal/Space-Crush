@@ -6,7 +6,8 @@ public class LevelManager : MonoBehaviour
 {
 
     public static LevelManager instance = null;
-    public float autoLoadNextLevelAfter;
+
+    [SerializeField] float autoLoadNextLevelAfter;
 
     void Awake()
     {

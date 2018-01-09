@@ -3,10 +3,12 @@ using System.Collections;
 
 public class WeaponController : MonoBehaviour 
 {
-	public GameObject shot;
-	public Transform shotSpawn;
-	public float fireRate;
-	public float delay;
+	[SerializeField] GameObject shot;
+
+    [SerializeField] Transform shotSpawn;
+
+    [SerializeField] float fireRate;
+    [SerializeField] float delay;
 
     private float speed;
 

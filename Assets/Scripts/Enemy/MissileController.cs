@@ -5,37 +5,31 @@ public class MissileController : MonoBehaviour
 {
     private Transform playerTransform;
 
-    public Animator flashAnimator;
+    [SerializeField] Animator flashAnimator;
 
-    public GameObject blastRadiusExplosion;
+    [SerializeField] GameObject blastRadiusExplosion;
+
+    [SerializeField] float flashSpeed;
+    [SerializeField] float flashIncrement;
+
     public float triggerRadius;
-    public float flashSpeed;
-    public float flashIncrement;
 
-    // Use this for initialization
     void Start()
     {
-        // find player
-        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        if (playerObject != null)
-        {
-            playerTransform = playerObject.transform;
-        }
+        FindPlayer();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         if (playerTransform != null)
         {
+            // Missle flashing light setup
             flashAnimator.speed = Mathf.Max(1, flashSpeed - (Vector3.Distance(transform.position, playerTransform.position) / flashIncrement));
 
+            // If player enters trigger radius then...
             if (Vector3.Distance(transform.position, playerTransform.position) < triggerRadius)
             {
-                this.tag = "Dead";
-                GameObject Explosion = Instantiate(blastRadiusExplosion, transform.position, transform.rotation) as GameObject;
-                Explosion.GetComponent<BlastController>().blastRadius = triggerRadius;
-                Destroy(gameObject);
+                DestroyMissile();
             }
 
         }
@@ -43,5 +37,26 @@ public class MissileController : MonoBehaviour
         {
             flashAnimator.speed = 1.0f;
         }
+    }
+
+    private void FindPlayer()
+    {
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
+        {
+            playerTransform = playerObject.transform;
+        }
+        else
+        {
+            Debug.Log(this.GetType() + " Error: Couldn't find the Player object");
+        }
+    }
+
+    private void DestroyMissile()
+    {
+        this.tag = "Dead";
+        GameObject Explosion = Instantiate(blastRadiusExplosion, transform.position, transform.rotation) as GameObject;
+        Explosion.GetComponent<BlastController>().blastRadius = triggerRadius;
+        Destroy(gameObject);
     }
 }

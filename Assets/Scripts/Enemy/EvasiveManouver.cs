@@ -3,13 +3,15 @@ using System.Collections;
 
 public class EvasiveManouver : MonoBehaviour 
 {
-	public float dodge;
-	public float smoothing;
-	public float tilt;
-	public Vector2 startWait;
+    [SerializeField] float dodge;
+    [SerializeField] float smoothing;
+    [SerializeField] float tilt;
+
+    [SerializeField] Boundary boundary;
+
+    public Vector2 startWait;
 	public Vector2 manouverTime;
 	public Vector2 manouverWait;
-	public Boundary boundary;
 
 	private float currentSpeed;
     protected float targetManouver;

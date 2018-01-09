@@ -14,7 +14,7 @@ public class DestroyByContact : MonoBehaviour
 
     void Start()
     {
-        CheckIfGameControllerExists();
+        FindGameController();
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -25,77 +25,50 @@ public class DestroyByContact : MonoBehaviour
             return;
         }
 
-        // Explosion
-        ReactToExplosion();
-
-        //Player Explosion
         if (other.tag == "Player")
         {
             CreatePlayerExplosion(other);
-            EndTheGame();
+            gameController.GameOver();
         }
         else
         {
             gameController.AddScore(scoreValue);
         }
 
+        ReactToExplosion();
+
+        // Destroys object collision with player
         if (other.tag != "Explosion" && other.tag != "Shield")
         {
-            DestroyOtherOnCollisonWithPlayer(other);
+            DestroyOther(other);
         }
 
         ReactToShieldExplosion(other);
 
+        // Destroys player on collison with other object
         if (!CompareTag("Explosion"))
         {
-            DestroyPlayerOnCollisionWithOther();
+            DestroyPlayer();
         }
     }
 
-    private void ReactToShieldExplosion(Collider2D other)
+    private void FindGameController()
     {
-        if (other.tag == "Shield")
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
         {
-            if (CompareTag("Explosion"))
-            {
-                DelayShield(other);
-            }
-            else
-            {
-                DestroyShield(other);
-            }
+            gameController = gameControllerObject.GetComponent<GameController>();
         }
-    }
-
-    private void DestroyPlayerOnCollisionWithOther()
-    {
-        Destroy(gameObject);
-    }
-
-    private static void DestroyShield(Collider2D other)
-    {
-        other.GetComponentInParent<PlayerController>().ShieldDown();
-    }
-
-    private static void DelayShield(Collider2D other)
-    {
-        other.GetComponentInParent<PlayerController>().ShieldDownDelayed(.2f);
-    }
-
-    private static void DestroyOtherOnCollisonWithPlayer(Collider2D other)
-    {
-        Destroy(other.gameObject);
+        if (gameController == null)
+        {
+            Debug.Log(this.GetType() + " Error: Cannot find 'GameController' Script");
+        }
     }
 
     private void CreatePlayerExplosion(Collider2D other)
     {
         Instantiate(playerExplosion, other.transform.position, Quaternion.Euler(0.0f, 0.0f, 0.0f));
         SoundManager.instance.PlayPlayerExplosion();
-    }
-
-    private void EndTheGame()
-    {
-        gameController.GameOver();
     }
 
     private void ReactToExplosion()
@@ -120,15 +93,15 @@ public class DestroyByContact : MonoBehaviour
         }
     }
 
-    private void CreateOtherExplosion()
-    {
-        Instantiate(explosion, transform.position, Quaternion.Euler(0.0f, 0.0f, Random.Range(0, 359)));
-    }
-
     private void CreateMissileExplosion(MissileController missileController)
     {
         GameObject Explosion = Instantiate(explosion, transform.position, transform.rotation) as GameObject;
         Explosion.GetComponent<BlastController>().blastRadius = missileController.triggerRadius;
+    }
+
+    private void CreateOtherExplosion()
+    {
+        Instantiate(explosion, transform.position, Quaternion.Euler(0.0f, 0.0f, Random.Range(0, 359)));
     }
 
     private void PlayOtherExplosionSound()
@@ -136,16 +109,38 @@ public class DestroyByContact : MonoBehaviour
         SoundManager.instance.PlayExplosion(explosionSound);
     }
 
-    private void CheckIfGameControllerExists()
+    private static void DestroyOther(Collider2D other)
     {
-        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
-        if (gameControllerObject != null)
+        Destroy(other.gameObject);
+    }
+
+    private void ReactToShieldExplosion(Collider2D other)
+    {
+        if (other.tag == "Shield")
         {
-            gameController = gameControllerObject.GetComponent<GameController>();
+            if (CompareTag("Explosion"))
+            {
+                DelayShield(other);
+            }
+            else
+            {
+                DestroyShield(other);
+            }
         }
-        if (gameController == null)
-        {
-            Debug.Log("Cannot find 'GameController' Script");
-        }
+    }
+
+    private static void DelayShield(Collider2D other)
+    {
+        other.GetComponentInParent<PlayerController>().ShieldDownDelayed(.2f);
+    }
+
+    private static void DestroyShield(Collider2D other)
+    {
+        other.GetComponentInParent<PlayerController>().ShieldDown();
+    }
+
+    private void DestroyPlayer()
+    {
+        Destroy(gameObject);
     }
 }
